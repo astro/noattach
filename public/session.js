@@ -19,7 +19,7 @@ Share.prototype.upload = function(token) {
 	$.ajax({ url: document.location.pathname +
 		      '/f' + that.id + '/' + token,
 		 type: 'POST',
-		 data: reader.result
+		 data: window.btoa(reader.result)
 	       });
     };
     reader.onabort = function() {

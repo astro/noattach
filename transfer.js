@@ -31,12 +31,18 @@ Transfer.prototype.acceptUpload = function(req, res) {
     this.upReq = req;
     this.upRes = res;
 
+    req.setEncoding('utf-8');
+    var buf = '';
     req.on('data', function(data) {
+	buf += data;
+	var i = Math.floor(buf.length / 4) * 4;
+	data = new Buffer(buf.slice(0, i), 'base64');
+	buf = buf.slice(i, buf.length);
 	var written = that.downRes.write(data);
 	if (!written)
 	    req.socket.pause();
     });
-    req.downRes.socket.on('drain', function() {
+    this.downRes.socket.on('drain', function() {
 	req.socket.resume();
     });
     req.on('end', function() {
