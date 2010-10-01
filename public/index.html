@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>noatta.ch: Instant Personal File Sharing</title>
+    <script type="text/javascript" src="/jquery-1.4.2.min.js"> </script>
+    <script type="text/javascript" src="/socket-io.js"> </script>
+    <script type="application/javascript" src="/session.js"> </script>
+    <link type="text/css" rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <div class="head">
+      <p class="shareurl">
+	Share this URL with your friends.
+      </p>
+      <h1><span style="color: red;">no</span>atta<span style="color: red;">.</span>ch</h1>
+      <p class="slogan">Instant Personal File Sharing</p>
+    </div>
+
+    <div id="dashboard" class="content">
+
+      <div class="left">
+	<h2>You share</h2>
+
+	<div id="shares">
+	</div>
+
+        <div class="box">
+	  <div class="inner">
+	    <label for="file">Add file:</label>
+	    <input type="file" id="file" size="5"
+	           multiple="multiple" min="0" max="1000">
+	  </div>
+	  <p class="note">
+	  Files remain shared as long as this page is open in a
+	  browser window/tab.
+	  </p>
+	</div>
+      </div>
+
+      <div class="right">
+	<h2>Others share</h2>
+
+	<ul id="remote">
+	</ul>
+      </div>
+
+      <div class="foot">
+      </div>
+
+    </div>
+
+    <script type="application/javascript">
+      $('#dashboard').hide();
+    </script>
+  </body>
+</html>
