@@ -32,12 +32,20 @@ Share.prototype.upload = function(token) {
 };
 
 function RemoteShare(shareInfo) {
-    var li = $('<li><a href="#"></a> <span class="size"></span></li>');
+    var li = $('<li><a href="#"></a> <span class="meta"><span class="size"></span></span></li>');
     var a = li.find('a');
     a.text(shareInfo.name);
     a.attr('href', document.location.pathname + '/f' + shareInfo.id);
     var size = li.find('.size');
     size.text(shareInfo.size);
+    if (shareInfo.by) {
+	var by = $('<span class="by"></span>');
+	by.text(shareInfo.by);
+	li.find('.meta').append(' by ').append(by);
+    }
+
+    li.hide();
+    li.slideDown(500);
     $('#remote').append(li);
 }
 

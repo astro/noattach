@@ -126,7 +126,7 @@ socketServer.on('connection', function(socket) {
     // hook socket's message & disconnect
 
     socket.on('message', function(data) {
-console.log(data.toString());
+	console.log(data.toString());
 	var json;
 	try {
 	    json = JSON.parse(data);

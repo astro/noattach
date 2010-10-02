@@ -46,6 +46,7 @@ Room.prototype.receive = function(socket, json) {
 	    len++;
 	} while(this.shares.hasOwnProperty(id));
 	shareInfo.id = id;
+	shareInfo.by = socket.connection.remoteAddress;
 
 	// Add info
 	this.shares[id] = {
