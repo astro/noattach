@@ -28,8 +28,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2"
-     inkscape:cx="330.67987"
-     inkscape:cy="914.44956"
+     inkscape:cx="235.46342"
+     inkscape:cy="853.79512"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -46,7 +46,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -55,13 +55,6 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-1036.3622)">
-    <rect
-       style="fill:#000000;fill-opacity:1;stroke:none"
-       id="rect3819"
-       width="544"
-       height="119"
-       x="71"
-       y="158.36218" />
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Universalis ADF Cd Std;-inkscape-font-specification:Universalis ADF Cd Std Bold Condensed"
@@ -77,11 +70,11 @@
          dx="0"><tspan
            style="fill:#800000"
            id="tspan2999-8">no</tspan><tspan
-           style="fill:#916f6f"
+           style="fill:#4d4d4d"
            id="tspan3821-6">atta</tspan><tspan
            style="fill:#800000"
            id="tspan3001-0">.</tspan><tspan
-           style="fill:#6c5353"
+           style="fill:#4d4d4d"
            id="tspan3823-4">ch</tspan></tspan></text>
     <text
        xml:space="preserve"
@@ -96,17 +89,15 @@
          y="266.05286"
          style="font-size:128px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:-16.82000542px;font-family:TratexSvart;-inkscape-font-specification:TratexSvart Bold"
          dx="0"><tspan
-           style="fill:#ff0000"
-           id="tspan2999">no</tspan><tspan
-           style="fill:#ffffff"
-           id="tspan3821">atta</tspan><tspan
-           style="fill:#ff0000"
-           id="tspan3001">.</tspan><tspan
-           style="fill:#e6e6e6"
-           id="tspan3823">ch</tspan></tspan></text>
+   style="fill:#aa0000"
+   id="tspan2999">no</tspan>atta<tspan
+   style="fill:#aa0000"
+   id="tspan3001">.</tspan><tspan
+   style="fill:#333333"
+   id="tspan3823">ch</tspan></tspan></text>
     <g
        id="g3803"
-       transform="matrix(0.70446792,0.21461254,-0.21461254,0.70446792,138.24969,-33.069621)">
+       transform="matrix(0.57564784,0.20065188,-0.17536816,0.65864189,144.75729,-15.329992)">
       <g
          transform="matrix(0.16123477,0,0,0.16123477,115.58167,240.11054)"
          id="g3003">
@@ -149,17 +140,18 @@
       </g>
     </g>
     <g
-       style="font-size:128px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff0000;fill-opacity:1;stroke:none;font-family:TratexSvart;-inkscape-font-specification:TratexSvart"
+       style="font-size:128px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#aa0000;fill-opacity:1;stroke:none;font-family:TratexSvart;-inkscape-font-specification:TratexSvart"
        id="text3010"
        transform="translate(-1.3140195,-1.1826176)">
       <path
-         d="m 190.48054,190.81608 -1.408,0 c -6.05871,7e-5 -11.8187,1.62141 -17.28,4.864 -8.70402,5.03473 -14.54935,12.24539 -17.536,21.632 -0.76801,3.66938 -1.15201,7.33871 -1.152,11.008 -10e-6,4.94936 0.59732,9.47203 1.792,13.568 2.21865,7.68001 6.48531,14.03734 12.8,19.072 6.39997,4.94933 13.52529,7.424 21.376,7.424 l 1.408,0 m -6.3e-4,-18.4286 c -2.81605,1e-5 -6.61275,-0.94205 -9.08737,-2.5634 -4.09604,-2.64531 -6.91203,-6.05864 -8.448,-10.24 -0.76803,-2.21864 -1.15203,-4.73597 -1.152,-7.552 -3e-5,-2.81596 0.38397,-5.33329 1.152,-7.552 1.53597,-4.18129 4.35196,-7.55195 8.448,-10.112 2.47462,-1.62128 6.27132,-2.30054 9.08737,-2.3006"
+         d="m 190.48054,190.81608 -1.408,0 c -6.05871,7e-5 -11.8187,1.62141 -17.28,4.864 -8.70402,5.03473 -14.54935,12.24539 -17.536,21.632 -0.76801,3.66938 -1.15201,7.33871 -1.152,11.008 -10e-6,4.94936 0.59732,9.47203 1.792,13.568 2.21865,7.68001 6.48531,14.03734 12.8,19.072 6.39997,4.94933 13.52529,7.424 21.376,7.424 l 1.408,0 m -6.3e-4,-16.4286 c -2.81605,1e-5 -6.61275,-2.94205 -9.08737,-4.5634 -4.09604,-2.64531 -6.91203,-6.05864 -8.448,-10.24 -0.76803,-2.21864 -1.15203,-4.73597 -1.152,-7.552 -3e-5,-2.81596 0.38397,-5.33329 1.152,-7.552 1.53597,-4.18129 4.35196,-7.55195 8.448,-10.112 2.47462,-1.62128 6.27132,-2.30054 9.08737,-2.3006"
          id="path3015"
          inkscape:connector-curvature="0"
-         sodipodi:nodetypes="ccccsccscccccccc" />
+         sodipodi:nodetypes="ccccsccscccccccc"
+         style="fill:#aa0000" />
     </g>
     <rect
-       style="fill:#ff0000;fill-opacity:1;stroke:none"
+       style="fill:#aa0000;fill-opacity:1;stroke:none"
        id="rect3815"
        width="68.520065"
        height="8.2473259"
