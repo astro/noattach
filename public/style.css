@@ -1,0 +1,170 @@
+body {
+  width: 40em;
+  margin: 0 auto;
+  padding: 0;
+  background-color: #222;
+  color: white;
+  font-family: sans-serif;
+}
+
+div.head {
+  margin: 0;
+  padding: 0;
+  background-color: black;
+}
+p.shareurl { 
+  float: right;
+  content: url(/shareurl.png);
+  color: red;
+  font-weight: bold;
+  font-size: small;
+  padding: 0 1em;
+}
+p.slogan {
+  padding: 0.2em 2em;
+  margin: 0;
+  font-weight: bold;
+  font-size: small;
+}
+h1 {
+  font-size: 0;
+  color: black;
+  padding: 0;
+  margin: 0;
+}
+h1:after {
+  content: url(/logo.png);
+  font-size: medium;  /* for proportional padding */
+  padding: 0.2em 0.5em;
+  margin: 0;
+}
+
+div.content { 
+  background-color: #333;
+  margin: 0;
+  padding: 1em 1.5em;
+}
+
+div.content .right {
+  width: 16em;
+  margin-left: 20em;
+}
+div.content .left {
+  float: left;
+  width: 16em;
+}
+div.content .foot {
+  clear: both;
+}
+
+h2 {
+  font-weight: bold;
+  font-size: x-large;
+  //font-style: oblique;
+  font-variant: small-caps;
+  color: #ccc;
+  text-shadow: #666 2px 1px 0;
+  margin: 0;
+  padding: 0.1em 0;
+}
+
+.note {
+  color: #ccc;
+  font-size: small;
+}
+
+.box {
+  background-color: #666;
+  border-radius: 0.4em;
+  -moz-border-radius: 0.4em;
+  border-top: 1px solid #888;
+  border-left: 1px solid #888;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  padding: 0.3em 0.4em;
+  margin: 0.5em 0;
+}
+.box p { 
+  padding: 1em 0 0;
+  margin: 0;
+}
+.box .inner {
+  background-color: #333;
+  border-radius: 0.3em;
+  -moz-border-radius: 0.3em;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid #888;
+  border-bottom: 1px solid #888;
+  padding: 0.1em 0.4em;
+  margin: 0;
+}
+.box .inner p {
+  padding: 0.2em 0.1em;
+  margin: 0;
+}
+.box .inner .name {
+  overflow: hidden;
+}
+.box .inner .size {
+  float: right;
+  text-align: right;
+}
+
+#remote h3 {
+  font-family: monospace;
+  font-weight: bold;
+  font-size: medium;
+  color: #ddd;
+  text-shadow: #666 2px 1px 0;
+  margin: 0;
+  padding: 0.2em 0;
+}
+ul#remote {
+  padding: 0;
+  margin: 0.2em 0 0.5em 0;
+  list-style-type: none;
+}
+ul#remote li a:before {
+  content: url(/file.png);
+  padding: 0 1px;
+  margin: 0;
+}
+ul#remote li a {
+  text-decoration: none;
+  color: white;
+  text-shadow: #666 1px 1px 2px;
+}
+ul#remote li a:hover {
+  text-decoration: none;
+  color: white;
+  text-shadow: #white 1px 1px 2px;
+}
+.size {
+  color: #aaa;
+  font-weight: bold;
+  font-size: x-small;
+}
+
+p.righticon { 
+  text-align: right;
+  margin: 0;
+  padding: 0.2em 0;
+}
+a.remove:before {
+  content: url(/remove.png);
+}
+a.remove {
+  font-size: 0;
+}
+
+label[for='file']:before {
+  content: url(/add.png);
+  padding: 2px 1px;
+}
+label[for='file'] {
+}
+input[type=file] {
+  width: 2em;
+  overflow: hidden;
+}
