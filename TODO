@@ -1,3 +1,7 @@
+connection status
+feature test
+file input layout
+
 binary upload
 state restore upon socket reconnect
 range transfers

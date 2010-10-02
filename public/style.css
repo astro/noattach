@@ -12,30 +12,36 @@ div.head {
   padding: 0;
 }
 p.shareurl { 
-  float: right;
   content: url(/shareurl.png);
-  color: red;
+  position: fixed;
+  top: 0;
+  right: 0;
+  color: #AA0000;
   font-weight: bold;
   font-size: small;
-  padding: 0 1em;
+  margin: 0;
+  padding: 0.2em 0.2em 0 0;
+}
+h1 {
+  padding: 0;
+  margin: 0;
+  color: black;
+  text-shadow: #4d4d4d 2px 2px 0;
+  font-size: 500%;
+  letter-spacing: -0.1em;
+  content: url(/logo.png);
+}
+h1 .rouge { 
+  color: #AA0000;
+  text-shadow: #800000 2px 2px 0;
 }
 p.slogan {
   padding: 0.2em 2em;
   margin: 0;
   font-weight: bold;
   font-size: small;
-}
-h1 {
-  font-size: 0;
-  color: white;
-  padding: 0;
-  margin: 0;
-}
-h1:after {
-  content: url(/logo.png);
-  font-size: medium;  /* for proportional padding */
-  padding: 0.2em 0.5em;
-  margin: 0;
+  color: #333333;
+  text-shadow: #4d4d4d 0 0 1px;
 }
 
 div.content { 
@@ -61,21 +67,20 @@ div.content .foot {
 h2 {
   font-weight: bold;
   font-size: x-large;
-  //font-style: oblique;
   font-variant: small-caps;
-  color: #777;
-  text-shadow: #aaa 2px 1px 0;
+  color: #aaa;
+  text-shadow: #ddd 2px 1px 0;
   margin: 0;
   padding: 0.1em 0;
 }
 
 .note {
-  color: #ccc;
+  color: #aaa;
   font-size: small;
 }
 
 .box {
-  padding: 0.3em 0.4em;
+  padding: 0.2em 0.4em 0.4em;
   margin: 0.5em 0;
   background-color: white;
   border-radius: 0.3em;
@@ -85,20 +90,28 @@ h2 {
   padding: 1em 0 0;
   margin: 0;
 }
-.box .inner {
-  padding: 0.1em 0.4em;
+.box p {
+  padding: 0 0.1em;
   margin: 0;
 }
-.box .inner p {
-  padding: 0.2em 0.1em;
-  margin: 0;
-}
-.box .inner .name {
+.box .name {
   overflow: hidden;
 }
-.box .inner .size {
+.box .size {
+  font-size: x-small;
+  color: #888;
+}
+
+p.righticon { 
   float: right;
   text-align: right;
+  margin: 0;
+}
+a.remove:before {
+  content: url(/remove.png);
+}
+a.remove {
+  font-size: 0;
 }
 
 ul#remote {
@@ -122,38 +135,30 @@ ul#remote li a:hover {
 }
 ul#remote li .meta {
   display: block;
-  color: #aaa;
+  margin-left: 18px;
+  color: #888;
   font-size: x-small;
 }
 .size {
   font-weight: bold;
 }
 .by {
-  color: #aaa;
-  text-shadow: #bbb 1px 0 1px;
+  text-shadow: #aaa 0 1px 0;
   font-family: monospace;
-  font-size: x-small;
-}
-
-p.righticon { 
-  text-align: right;
-  margin: 0;
-  padding: 0.2em 0;
-}
-a.remove:before {
-  content: url(/remove.png);
-}
-a.remove {
-  font-size: 0;
 }
 
 label[for='file']:before {
   content: url(/add.png);
-  padding: 2px 1px;
+  padding: 4px 1px 0;
 }
 label[for='file'] {
+  color: #777;
+  font-weight: bold;
+  font-size: small;
 }
 input[type=file] {
-  width: 2em;
+  font-size: x-small;
+  width: 10em;
   overflow: hidden;
+  color: #aaa;
 }
