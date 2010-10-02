@@ -1,12 +1,23 @@
 var send;
 
+function humanSize(size) {
+    var units = ['T', 'G', 'M', 'K'];
+    var unit = '';
+    while(size >= 1024 && units.length > 0) {
+	size /= 1024;
+	unit = units.pop();
+    }
+    return (Math.round(size * 10) / 10) + ' ' +
+	unit + 'B';
+}
+
 function Share(file, shareInfo) {
     this.id = shareInfo.id;
     this.file = file;
 
     var div = $('<div class="box"><div class="inner"><p class="size"></p><p class="name"></p></div><p class="righticon"><a class="remove" target="_blank" title="Remove">[rm]</a></p></div>');
     div.find('.name').text(shareInfo.name);
-    div.find('.size').text(shareInfo.size);
+    div.find('.size').text(humanSize(shareInfo.size));
     $('#shares').append(div);
 }
 
@@ -37,7 +48,7 @@ function RemoteShare(shareInfo) {
     a.text(shareInfo.name);
     a.attr('href', document.location.pathname + '/f' + shareInfo.id);
     var size = li.find('.size');
-    size.text(shareInfo.size);
+    size.text(humanSize(shareInfo.size));
     if (shareInfo.by) {
 	var by = $('<span class="by"></span>');
 	by.text(shareInfo.by);
