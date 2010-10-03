@@ -1,5 +1,5 @@
 body {
-  width: 40em;
+  width: 50em;
   margin: 0 auto;
   padding: 0;
   background-color: white;
@@ -53,12 +53,12 @@ div.content {
 }
 
 div.content .right {
-  width: 16em;
-  margin-left: 20em;
+  width: 20em;
+  margin-left: 25em;
 }
 div.content .left {
   float: left;
-  width: 16em;
+  width: 20em;
 }
 div.content .foot {
   clear: both;
@@ -161,7 +161,8 @@ label[for='file'] {
 }
 input[type=file] {
   font-size: x-small;
-  width: 10em;
+  width: 15em;
   overflow: hidden;
   color: #aaa;
+  margin: 0.1em 0.1em 0.5em;
 }
