@@ -1,5 +1,10 @@
 var send;
 
+if (!window.console) {
+    var stub = function() { };
+    window.console = { log: stub, warn: stub, error: stub };
+}
+
 function humanSize(size) {
     var units = ['T', 'G', 'M', 'K'];
     var unit = '';
