@@ -13,7 +13,7 @@ div.head {
 }
 p.shareurl { 
   content: url(/shareurl.png);
-  position: fixed;
+  position: absolute;
   top: 0;
   right: 0;
   color: #AA0000;
@@ -24,7 +24,7 @@ p.shareurl {
 }
 h1 {
   padding: 0;
-  margin: 0;
+  margin: 0 0.1em;
   color: black;
   text-shadow: #4d4d4d 2px 2px 0;
   font-size: 500%;
@@ -46,8 +46,8 @@ p.slogan {
 
 div.content { 
   background-color: #f3f3f3;
-  margin: 0;
-  padding: 1em 1.5em;
+  margin: 1em 0;
+  padding: 0.5em 1.5em;
   border-radius: 1em;
   -moz-border-radius: 1em;
 }
@@ -102,6 +102,12 @@ h2 {
   color: #888;
 }
 
+.file:before {
+  content: url(/file.png);
+  padding: 0 1px;
+  margin: 0;
+}
+
 p.righticon { 
   float: right;
   text-align: right;
@@ -119,26 +125,24 @@ a.remove {
 
 ul#remote {
   padding: 0;
-  margin: 0.2em 0 0.5em 0;
+  margin: 0.2em 0;
   list-style-type: none;
-}
-ul#remote li a:before {
-  content: url(/file.png);
-  padding: 0 1px;
-  margin: 0;
 }
 ul#remote li a {
   text-decoration: none;
   color: black;
+  text-shadow: white 1px 1px 2px;
 }
 ul#remote li a:hover {
   text-decoration: none;
   color: black;
-  text-shadow: #333 1px 1px 2px;
+  text-shadow: #333 1px -1px 2px;
 }
 ul#remote li .meta {
   display: block;
-  margin-left: 18px;
+  padding: 0;
+  margin: 0;
+  margin-bottom: 0.8em;
   color: #888;
   font-size: x-small;
 }

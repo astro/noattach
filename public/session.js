@@ -20,7 +20,7 @@ function Share(file, shareInfo) {
     this.id = shareInfo.id;
     this.file = file;
 
-    var div = $('<div class="box"><p class="name"></p><p class="righticon"><a class="remove" target="_blank" title="Remove">[rm]</a></p><p class="size"></p></div>');
+    var div = $('<div class="box"><p class="name file"></p><p class="righticon"><a class="remove" target="_blank" title="Remove">[rm]</a></p><p class="size"></p></div>');
     div.find('.name').text(shareInfo.name);
     div.find('.size').text(humanSize(shareInfo.size));
     $('#shares').append(div);
@@ -91,11 +91,12 @@ UploadProgress.prototype.draw = function() {
     line(1, h - 1, w - 2, h - 1);  // bottom
     line(w - 1, 1, w - 1, h - 2);  // right*/
 
-    ctx.globalAlpha = 0.5;
-    if (this.prototype < 0) {
+    if (this.progress < 0) {
+	ctx.globalAlpha = 0.2;
 	ctx.fillStyle = '#800000';
 	ctx.fillRect(1, 1, w - 2, h - 2);
     } else {
+	ctx.globalAlpha = 0.8;
 	ctx.fillStyle = '#AA0000';
 	ctx.fillRect(1, 1, this.progress * (w - 2), h - 2);
     }
@@ -115,15 +116,13 @@ UploadProgress.prototype.trackXHR = function(xhr, by) {
 	that.draw();
     };
     xhr.upload.onprogress = function(ev) {
-	that.progress = ev.position / ev.totalSize;
+	that.progress = ev.loaded / ev.total;
 	that.draw();
 	console.log({progress:ev});
     };
     xhr.upload.onloadend = function() {
 	that.end();
     };
-
-    console.log(xhr.upload);
 };
 
 UploadProgress.prototype.end = function() {
@@ -131,7 +130,7 @@ UploadProgress.prototype.end = function() {
 };
 
 function RemoteShare(shareInfo) {
-    var li = $('<li><a href="#"></a> <span class="meta"><span class="size"></span></span></li>');
+    var li = $('<li><a class="file" href="#"></a> <span class="meta"><span class="size"></span></span></li>');
     var a = li.find('a');
     a.text(shareInfo.name);
     a.attr('href', document.location.pathname + '/f' + shareInfo.id);
