@@ -144,7 +144,9 @@ UploadProgress.prototype.trackXHR = function(xhr, by) {
 };
 
 UploadProgress.prototype.end = function() {
-    this.p.remove();
+    this.p.fadeOut(1000, function() {
+	this.p.remove();
+    });
 };
 
 function RemoteShare(shareInfo) {
