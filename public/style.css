@@ -113,6 +113,9 @@ a.remove:before {
 a.remove {
   font-size: 0;
 }
+.upload canvas { 
+  margin: 0.4em 0 0;
+}
 
 ul#remote {
   padding: 0;

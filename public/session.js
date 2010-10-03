@@ -24,27 +24,110 @@ function Share(file, shareInfo) {
     div.find('.name').text(shareInfo.name);
     div.find('.size').text(humanSize(shareInfo.size));
     $('#shares').append(div);
+    this.div = div;
 }
 
-Share.prototype.upload = function(token) {
+Share.prototype.upload = function(token, by) {
     var that = this;
+
+    var up = new UploadProgress(this.div, by);
+    var shut = function() {
+	up.end();
+    };
     var reader = new FileReader();
-    reader.readAsBinaryString(this.file);
     reader.onload = function() {
 	console.log('read '+reader.result.length);
 	$.ajax({ url: document.location.pathname +
 		      '/f' + that.id + '/' + token,
 		 type: 'POST',
-		 data: window.btoa(reader.result)
+		 data: window.btoa(reader.result),
+		 beforeSend: function(xhr) {
+		     up.trackXHR(xhr);
+		 },
+		 success: shut,
+		 error: shut
 	       });
     };
-    reader.onabort = function() {
-	console.error('abort');
-    };
-    reader.onerror = function(e) {
-	alert(e.message);
-    };
+    reader.onabort = shut;
+    reader.onerror = shut;
+    // give some time to render UploadProgress
+    window.setTimeout(function() {
+	reader.readAsBinaryString(that.file);
+    }, 10);
+
     console.log(reader);
+};
+
+function UploadProgress(parent, by) {
+    var p = $('<p class="upload"><canvas width="100" height="16"></canvas> <span class="by"></span></p>');
+    this.p = p;
+    parent.append(p);
+
+    if (by)
+	p.find('.by').text(by);
+
+    this.progress = -1;
+    this.draw();
+}
+
+UploadProgress.prototype.draw = function() {
+    if (!this.canvas)
+	this.canvas = this.p.find('canvas')[0];
+    var ctx = this.canvas.getContext('2d');
+    var w = this.canvas.width, h = this.canvas.height;
+
+    ctx.clearRect(0, 0, w, h);
+
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.lineWidth = 1;
+    var line = function(x1, y1, x2, y2) {
+	ctx.moveTo(x1, y1);
+	ctx.lineTo(x2, y2);
+	ctx.stroke();
+    };
+
+    /*line(0, 1, 0, h - 2);  // left
+    line(1, 0, w - 2, 0);  // top
+    line(1, h - 1, w - 2, h - 1);  // bottom
+    line(w - 1, 1, w - 1, h - 2);  // right*/
+
+    ctx.globalAlpha = 0.5;
+    if (this.prototype < 0) {
+	ctx.fillStyle = '#800000';
+	ctx.fillRect(1, 1, w - 2, h - 2);
+    } else {
+	ctx.fillStyle = '#AA0000';
+	ctx.fillRect(1, 1, this.progress * (w - 2), h - 2);
+    }
+};
+
+UploadProgress.prototype.trackXHR = function(xhr, by) {
+    var that = this;
+
+    if (!xhr.upload) {
+	console.error('not receiving upload notifications');
+	this.end();
+	return;
+    }
+
+    xhr.upload.onloadstart = function() {
+	that.progress = 0;
+	that.draw();
+    };
+    xhr.upload.onprogress = function(ev) {
+	that.progress = ev.position / ev.totalSize;
+	that.draw();
+	console.log({progress:ev});
+    };
+    xhr.upload.onloadend = function() {
+	that.end();
+    };
+
+    console.log(xhr.upload);
+};
+
+UploadProgress.prototype.end = function() {
+    this.p.remove();
 };
 
 function RemoteShare(shareInfo) {
@@ -120,7 +203,7 @@ console.log(data);
 	}
 	if (json.transfer) {
 	    // TODO: implement long path for error case
-	    shares[json.transfer.id].upload(json.transfer.token);
+	    shares[json.transfer.id].upload(json.transfer.token, json.transfer.by);
 	}
     });
 

@@ -95,7 +95,9 @@ Room.prototype.requestTransfer = function(shareId, req, res) {
     } while(this.transfers.hasOwnProperty(token));
 
     // Send request
-    var msg = { transfer: { id: shareId, token: token } };
+    var msg = { transfer: { id: shareId,
+			    token: token,
+			    by: req.connection.remoteAddress } };
 console.log(msg);
     share.socket.send(JSON.stringify(msg));
 
