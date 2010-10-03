@@ -118,6 +118,7 @@ a.remove:before {
 }
 a.remove {
   font-size: 0;
+  color: white;
   text-decoration: none;
 }
 .upload canvas { 
