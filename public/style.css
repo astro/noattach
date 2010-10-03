@@ -44,6 +44,13 @@ p.slogan {
   text-shadow: #4d4d4d 0 0 1px;
 }
 
+p#loading {
+  font-size: large;
+  width: 20em;
+  margin: 1em auto;
+  color: #ccc;
+}
+
 div.content { 
   background-color: #f3f3f3;
   margin: 1em 0;

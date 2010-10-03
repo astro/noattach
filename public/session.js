@@ -196,9 +196,17 @@ function fileChosen(ev) {
 };
 
 
+var socket = null;
+function connect() {
+    if (socket !== null)
+	return;
 
-$(document).ready(function() {
-    var socket = new io.Socket(null, {transports:['websocket', 'htmlfile', 'xhr-multipart', 'xhr-polling']});
+    socket = new io.Socket(null,
+			   { transports: ['websocket', 'htmlfile',
+			                  'xhr-multipart', 'xhr-polling']
+			   });
+    var currentSocket = socket;
+console.log(socket);
     socket.connect();
 
     send = function(json) {
@@ -207,6 +215,7 @@ $(document).ready(function() {
 
     socket.on('connect', function(){
 	send({ join: document.location.pathname });
+	$('#loading').hide();
 	$('#dashboard').show();
     });
     socket.on('message', function(data){
@@ -243,6 +252,25 @@ console.log(data);
 	    shares[json.unshare.id].remove();
 	}
     });
+
+    var reconnect = function() {
+console.log({reconnect:arguments});
+	$('#dashboard').hide();
+	$('#loading').show();
+
+	if (socket === currentSocket)
+	    socket = null;
+	window.setTimeout(connect, Math.ceil((0.5 + 3 * Math.random()) * 1000));
+    };
+    socket.on('error',  reconnect);
+    socket.on('close', reconnect);
+
+socket.on('close', function() { console.log('close'); });
+socket.on('error', function() { console.log('error'); });
+}
+
+$(document).ready(function() {
+    connect();
 
     /* New file */
     $('#file').bind('change', fileChosen);
