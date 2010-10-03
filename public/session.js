@@ -50,6 +50,7 @@ Share.prototype.upload = function(token, by) {
 
     var up = new UploadProgress(this.div, by);
     var shut = function() {
+	console.log('shut');
 	up.end();
     };
     var reader = new FileReader();
@@ -136,16 +137,20 @@ UploadProgress.prototype.trackXHR = function(xhr, by) {
     xhr.upload.onprogress = function(ev) {
 	that.progress = ev.loaded / ev.total;
 	that.draw();
-	console.log({progress:ev});
     };
     xhr.upload.onloadend = function() {
+	console.log('onloadend');
 	that.end();
     };
 };
 
 UploadProgress.prototype.end = function() {
-    this.p.fadeOut(1000, function() {
-	this.p.remove();
+console.log('up end');
+    var p = this.p;
+    p.fadeOut(1000, function() {
+console.log('up remove');
+	p.remove();
+console.log('up removed');
     });
 };
 
