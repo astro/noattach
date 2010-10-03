@@ -1,4 +1,6 @@
 var send;
+var shares = {};
+
 
 if (!window.console) {
     var stub = function() { };
@@ -17,15 +19,31 @@ function humanSize(size) {
 }
 
 function Share(file, shareInfo) {
+    var that = this;
+
     this.id = shareInfo.id;
     this.file = file;
 
-    var div = $('<div class="box"><p class="name file"></p><p class="righticon"><a class="remove" target="_blank" title="Remove">[rm]</a></p><p class="size"></p></div>');
+    var div = $('<div class="box"><p class="name file"></p><p class="righticon"><a href="#" class="remove" title="Remove">[rm]</a></p><p class="size"></p></div>');
     div.find('.name').text(shareInfo.name);
     div.find('.size').text(humanSize(shareInfo.size));
+    div.find('a.remove').click(function(ev) {
+	ev.preventDefault();
+	that.remove();
+    });
     $('#shares').append(div);
     this.div = div;
 }
+
+Share.prototype.remove = function() {
+    var div = this.div;
+    div.slideUp(250, function() {
+	div.remove();
+    });
+
+    send({ unshare: { id: this.id } });
+    delete shares[this.id];
+};
 
 Share.prototype.upload = function(token, by) {
     var that = this;
@@ -130,7 +148,7 @@ UploadProgress.prototype.end = function() {
 };
 
 function RemoteShare(shareInfo) {
-    var li = $('<li><a class="file" href="#"></a> <span class="meta"><span class="size"></span></span></li>');
+    var li = $('<li><a class="file" href="#" target="_blank"></a> <span class="meta"><span class="size"></span></span></li>');
     var a = li.find('a');
     a.text(shareInfo.name);
     a.attr('href', document.location.pathname + '/f' + shareInfo.id);
@@ -145,7 +163,15 @@ function RemoteShare(shareInfo) {
     li.hide();
     li.slideDown(500);
     $('#remote').append(li);
+
+    this.li = li;
+    this.id = shareInfo.id;
 }
+
+RemoteShare.prototype.remove = function() {
+    this.li.remove();
+    delete shares[this.id];
+};
 
 var fileCache = {};
 
@@ -163,8 +189,6 @@ function fileChosen(ev) {
 };
 
 
-
-var shares = {};
 
 $(document).ready(function() {
     var socket = new io.Socket(null, {transports:['websocket', 'htmlfile', 'xhr-multipart', 'xhr-polling']});
@@ -184,7 +208,7 @@ console.log(data);
 	try {
 	    json = JSON.parse(data);
 	} catch (x) {
-	    console.error("Cannot parse: " + message);
+	    console.error("Cannot parse: " + data);
 	    return;
 	}
 
@@ -192,6 +216,7 @@ console.log(data);
 	    // Own share confirmed
 	    if (fileCache[json.shared.name]) {
 		shares[json.shared.id] = new Share(fileCache[json.shared.name], json.shared);
+		delete fileCache[json.shared.name];
 	    } else {
 		send({ unshare: { id: json.shared.id } });
 	    }
@@ -203,6 +228,12 @@ console.log(data);
 	if (json.transfer) {
 	    // TODO: implement long path for error case
 	    shares[json.transfer.id].upload(json.transfer.token, json.transfer.by);
+	}
+	if (json.unshare &&
+	    json.unshare.id &&
+	    shares.hasOwnProperty(json.unshare.id)) {
+	    // already removes itself from shares & the DOM
+	    shares[json.unshare.id].remove();
 	}
     });
 

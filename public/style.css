@@ -118,6 +118,7 @@ a.remove:before {
 }
 a.remove {
   font-size: 0;
+  text-decoration: none;
 }
 .upload canvas { 
   margin: 0.4em 0 0;

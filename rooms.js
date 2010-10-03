@@ -23,10 +23,27 @@ console.log({push:this.shares});
 
 Room.prototype.leave = function(socket) {
     var i;
+    // remove socket
     while((i = this.sockets.indexOf(socket)) >= 0)
 	this.sockets.splice(i, 1);
-    // TODO: filter shares
 
+    // remove affected shares
+    for(var shareId in this.shares)
+	if (this.shares[shareId].socket === socket) {
+	    // remove
+	    delete this.shares[shareId];
+
+	    // broadcast
+	    var msg = JSON.stringify({ unshare: { id: shareId } });
+	    this.sockets.forEach(function(socket1) {
+		socket1.send(msg);
+	    });
+	}
+
+    /* This was perhaps no normal HTTP request but a socket.io
+     * disconnect. Therefore we explicitly offer to remove this
+     * room
+     */
     rooms.tidy(this.id);
 };
 
@@ -35,29 +52,29 @@ Room.prototype.isEmpty = function() {
 };
 
 Room.prototype.receive = function(socket, json) {
-    var shareInfo = json && json.share;
-    if (shareInfo &&
-	shareInfo.name &&
-	shareInfo.size) {
-
+    if (json.share &&
+	json.share.name &&
+	json.share.size) {
+	// share
+	var info = json.share;
 	var id, len = 4;
 	do {
 	    id = util.generateToken(len);
 	    len++;
 	} while(this.shares.hasOwnProperty(id));
-	shareInfo.id = id;
-	shareInfo.by = socket.connection.remoteAddress;
+	info.id = id;
+	info.by = socket.connection.remoteAddress;
 
 	// Add info
 	this.shares[id] = {
 	    socket: socket,
-	    info: shareInfo
+	    info: info
 	};
 console.log({newShares:this.shares});
 console.log(this);
 
 	// Broadcast
-	var msg = JSON.stringify({ share: shareInfo });
+	var msg = JSON.stringify({ share: info });
 //console.log({msg:msg});
 	this.sockets.forEach(function(peerSocket) {
 //console.log([peerSocket.sessionId,socket.sessionId,peerSocket !== socket]);
@@ -66,7 +83,21 @@ console.log(this);
 	});
 
 	// Confirm
-	socket.send(JSON.stringify({ shared: shareInfo }));
+	socket.send(JSON.stringify({ shared: info }));
+    } else if (json.unshare && json.unshare.id) {
+	// unshare
+	var shareId = json.unshare.id;
+	if (this.shares.hasOwnProperty(shareId) &&
+	    // Security: only allow to remove owned shares
+	    this.shares[shareId].socket === socket) {
+
+	    // remove
+	    delete this.shares[shareId];
+	    // broadcast
+	    this.sockets.forEach(function(socket1) {
+		socket1.send(JSON.stringify({ unshare: { id: shareId } }));
+	    });
+	}
     }
 };
 
