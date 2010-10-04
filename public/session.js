@@ -143,6 +143,7 @@ UploadProgress.prototype.trackXHR = function(xhr, by) {
     };
     xhr.upload.onloadend = function() {
 	console.log('onloadend');
+	that.progress = 1;
 	that.end();
     };
 };
@@ -155,6 +156,7 @@ console.log('up remove');
 	p.remove();
 console.log('up removed');
     });
+    this.draw();
 };
 
 function RemoteShare(shareInfo) {
