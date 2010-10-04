@@ -99,6 +99,7 @@ h2 {
 }
 .box .name {
   overflow: hidden;
+  margin-right: 5em;
 }
 .box .control {
   margin-top: -1em;
