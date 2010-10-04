@@ -25,8 +25,9 @@ function Share(file, shareInfo) {
     this.file = file;
     this.name = shareInfo.name;
 
-    var div = $('<div class="box"><p class="name file"></p><p class="control"><span class="size"></span> <a href="#" class="remove" title="Remove">×</a></p></div>');
+    var div = $('<div class="box"><p><a class="name file"></a></p><p class="control"><span class="size"></span> <a href="#" class="remove" title="Remove">×</a></p></div>');
     div.find('.name').text(shareInfo.name);
+    div.find('.name').attr('href', document.location.pathname + '/f' + this.id);
     div.find('.size').text(humanSize(shareInfo.size));
     div.find('a.remove').click(function(ev) {
 	ev.preventDefault();

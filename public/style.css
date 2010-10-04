@@ -87,7 +87,7 @@ h2 {
 }
 
 .box {
-  padding: 0.4em;
+  padding: 0.4em 0.4em 0.2em;
   margin: 0.5em 0;
   background-color: white;
   border-radius: 0.3em;
@@ -97,7 +97,7 @@ h2 {
   padding: 0 0.1em;
   margin: 0;
 }
-.box .name {
+.box p .name {
   overflow: hidden;
   margin-right: 5em;
 }
@@ -130,6 +130,14 @@ h2 {
   padding: 0 1px;
   margin: 0;
 }
+.file {
+  text-decoration: none;
+  color: #777;
+}
+a.file:hover {
+  text-decoration: none;
+  color: #333;
+}
 
 .upload canvas { 
   margin: 0.4em 0 0;
@@ -140,16 +148,6 @@ ul#remote {
   padding: 0;
   margin: 0.2em 0;
   list-style-type: none;
-}
-ul#remote li a {
-  text-decoration: none;
-  color: black;
-  text-shadow: white 1px 1px 2px;
-}
-ul#remote li a:hover {
-  text-decoration: none;
-  color: black;
-  text-shadow: #333 1px -1px 2px;
 }
 ul#remote li .meta {
   display: block;
