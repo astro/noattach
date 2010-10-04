@@ -81,7 +81,7 @@ console.log('post to '+document.location.pathname + '/f' + that.id + '/' + token
 };
 
 function UploadProgress(parent, by) {
-    var p = $('<p class="upload"><canvas width="100" height="16"></canvas> <span class="by"></span></p>');
+    var p = $('<p class="upload"><canvas width="160" height="16"></canvas> <span class="by"></span></p>');
     this.p = p;
     parent.append(p);
 
