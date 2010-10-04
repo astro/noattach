@@ -2,6 +2,5 @@ connection status
 feature test
 file input layout
 
-binary upload (application/base64)
 state restore upon socket reconnect
 range transfers

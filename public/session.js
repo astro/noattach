@@ -69,10 +69,17 @@ console.log('readyState: '+xhr.readyState);
 console.log('post to '+document.location.pathname + '/f' + that.id + '/' + token);
 	xhr.open("POST",
 		 document.location.pathname + '/f' + that.id + '/' + token);
-	xhr.send(window.btoa(reader.result));
+	if (xhr.sendAsBinary) {
+	    xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+	    xhr.sendAsBinary(reader.result);
+	} else {
+	    xhr.setRequestHeader('Content-Type', 'application/base64');
+	    xhr.send(window.btoa(reader.result));
+	}
     };
     reader.onabort = shut;
     reader.onerror = shut;
+
     // give some time to render UploadProgress
     window.setTimeout(function() {
 	console.log({reader:that.file});

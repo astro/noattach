@@ -40,7 +40,7 @@ function roomMiddleware(req, res, next) {
 	var shareId = m[1];
 	var share = room.getShare(shareId);
 	if (share)
-	    res.writeHead(200, { 'Content-Type': 'binary/octet-stream',
+	    res.writeHead(200, { 'Content-Type': 'application/octet-stream',
 				 'Content-Disposition': 'attachment; filename=' + share.name,
 				 'Content-Length': share.size });
 	else

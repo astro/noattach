@@ -9,7 +9,7 @@ function Transfer(shareInfo, req, res) {
     this.downReq = req;
     this.downRes = res;  // HTTP response
 
-    res.writeHead(200, { 'Content-Type': 'binary/octet-stream',
+    res.writeHead(200, { 'Content-Type': 'application/octet-stream',
 			 'Content-Disposition': 'attachment; filename=' + shareInfo.name,
 			 'Content-Length': shareInfo.size });
 
@@ -31,8 +31,14 @@ Transfer.prototype.acceptUpload = function(req, res) {
     this.upReq = req;
     this.upRes = res;
 
-    var decoder = base64Decoder();
-    req.setEncoding('utf-8');  // FIXME
+    var decoder;
+    if (req.headers['content-type'] === 'application/base64') {
+	req.setEncoding('utf-8');
+	decoder = base64Decoder();
+    } else {
+	decoder = identityDecoder();
+	console.log('binary upload!');
+    }
 
     var buf = '';
     req.on('data', function(data) {
@@ -64,6 +70,12 @@ console.log({transferEnd:this});
     this.downRes.end();
 };
 
+
+function identityDecoder() {
+    return function(data) {
+	return data;
+    };
+}
 
 function base64Decoder() {
     var buf = '';  // string to decode
