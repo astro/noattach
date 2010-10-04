@@ -29,6 +29,7 @@ function roomMiddleware(req, res, next) {
 	var token = m[2];
 	var transfer = room.getTransfer(shareId, token);
 	if (!transfer) {
+	    console.warn({ mismatch: { shareId: shareId, token: token } });
 	    res.writeHead(404, { });
 	    res.end();
 	} else {

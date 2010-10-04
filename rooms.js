@@ -70,8 +70,6 @@ Room.prototype.receive = function(socket, json) {
 	    socket: socket,
 	    info: info
 	};
-console.log({newShares:this.shares});
-console.log(this);
 
 	// Broadcast
 	var msg = JSON.stringify({ share: info });

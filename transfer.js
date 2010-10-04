@@ -39,10 +39,14 @@ Transfer.prototype.acceptUpload = function(req, res) {
 	data = new Buffer(buf.slice(0, i), 'base64');
 	buf = buf.slice(i, buf.length);
 	var written = that.downRes.write(data);
-	if (!written)
+	console.log({written:written});
+	if (!written) {
 	    req.socket.pause();
+	    console.log('pause');
+	}
     });
     this.downRes.socket.on('drain', function() {
+	console.log('drain, resume');
 	req.socket.resume();
     });
     req.on('end', function() {

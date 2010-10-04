@@ -52,7 +52,7 @@ Share.prototype.upload = function(token, by) {
 
     var up = new UploadProgress(this.div, by);
     var shut = function() {
-	console.log('shut');
+	console.log({shut:arguments});
 	up.end();
     };
     var reader = new FileReader();
@@ -75,10 +75,9 @@ console.log('post to '+document.location.pathname + '/f' + that.id + '/' + token
     reader.onerror = shut;
     // give some time to render UploadProgress
     window.setTimeout(function() {
+	console.log({reader:that.file});
 	reader.readAsBinaryString(that.file);
     }, 10);
-
-    console.log(reader);
 };
 
 function UploadProgress(parent, by) {
