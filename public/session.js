@@ -23,6 +23,7 @@ function Share(file, shareInfo) {
 
     this.id = shareInfo.id;
     this.file = file;
+    this.name = shareInfo.name;
 
     var div = $('<div class="box"><p class="name file"></p><p class="control"><span class="size"></span> <a href="#" class="remove" title="Remove">×</a></p></div>');
     div.find('.name').text(shareInfo.name);
@@ -43,6 +44,7 @@ Share.prototype.remove = function() {
 
     send({ unshare: { id: this.id } });
     delete shares[this.id];
+    delete fileCache[this.name];
 };
 
 Share.prototype.upload = function(token, by) {
@@ -232,7 +234,6 @@ console.log(data);
 	    // Own share confirmed
 	    if (fileCache[json.shared.name]) {
 		shares[json.shared.id] = new Share(fileCache[json.shared.name], json.shared);
-		delete fileCache[json.shared.name];
 	    } else {
 		send({ unshare: { id: json.shared.id } });
 	    }
