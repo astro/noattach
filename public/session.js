@@ -58,16 +58,18 @@ Share.prototype.upload = function(token, by) {
     var reader = new FileReader();
     reader.onload = function() {
 	console.log('read '+reader.result.length);
-	$.ajax({ url: document.location.pathname +
-		      '/f' + that.id + '/' + token,
-		 type: 'POST',
-		 data: window.btoa(reader.result),
-		 beforeSend: function(xhr) {
-		     up.trackXHR(xhr);
-		 },
-		 success: shut,
-		 error: shut
-	       });
+
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function() {
+console.log('readyState: '+xhr.readyState);
+	    if (xhr.readyState === 4)  // DONE
+		shut();
+	};
+	up.trackXHR(xhr);
+console.log('post to '+document.location.pathname + '/f' + that.id + '/' + token);
+	xhr.open("POST",
+		 document.location.pathname + '/f' + that.id + '/' + token);
+	xhr.send(window.btoa(reader.result));
     };
     reader.onabort = shut;
     reader.onerror = shut;
