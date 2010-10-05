@@ -236,6 +236,7 @@ function restoreFiles() {
 
 function checkCompatibility() {
     var features = ["window.XMLHttpRequest",
+		    "(new XMLHttpRequest()).upload",
 		    "window.FileReader",
 		    "window.btoa"];
     var missing = [];
