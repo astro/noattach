@@ -249,6 +249,7 @@ function connect() {
     if (socket !== null)
 	return;
 
+    window.WEB_SOCKET_SWF_LOCATION = '/WebSocketMain.swf';
     socket = new io.Socket(null,
 			   { transports: ['websocket', 'htmlfile',
 			                  'xhr-multipart', 'xhr-polling']
