@@ -2,11 +2,6 @@ var send;
 var shares = {};
 
 
-if (!window.console) {
-    var stub = function() { };
-    window.console = { log: stub, warn: stub, error: stub };
-}
-
 function humanSize(size) {
     var units = ['T', 'G', 'M', 'K'];
     var unit = '';
@@ -55,16 +50,12 @@ Share.prototype.upload = function(token, by) {
 
     var up = new UploadProgress(this.div, by);
     var shut = function() {
-	console.log({shut:arguments});
 	up.end();
     };
     var reader = new FileReader();
     reader.onload = function() {
-	console.log('read '+reader.result.length);
-
 	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function() {
-console.log('readyState: '+xhr.readyState);
 	    if (xhr.readyState === 4)  // DONE
 		shut();
 	};
@@ -72,7 +63,6 @@ console.log('readyState: '+xhr.readyState);
 	xhr.ontimeout = shut;
 	xhr.onerror = shut;
 	up.trackXHR(xhr);
-console.log('post to '+document.location.pathname + '/f' + that.id + '/' + token);
 	xhr.open("POST",
 		 document.location.pathname + '/f' + that.id + '/' + token);
 	if (xhr.sendAsBinary) {
@@ -88,7 +78,6 @@ console.log('post to '+document.location.pathname + '/f' + that.id + '/' + token
 
     // give some time to render UploadProgress
     window.setTimeout(function() {
-	console.log({reader:that.file});
 	reader.readAsBinaryString(that.file);
     }, 10);
 };
@@ -141,7 +130,6 @@ UploadProgress.prototype.trackXHR = function(xhr, by) {
     var that = this;
 
     if (!xhr.upload) {
-	console.error('not receiving upload notifications');
 	this.end();
 	return;
     }
@@ -155,19 +143,15 @@ UploadProgress.prototype.trackXHR = function(xhr, by) {
 	that.draw();
     };
     xhr.upload.onloadend = function() {
-	console.log('onloadend');
 	that.progress = 1;
 	that.end();
     };
 };
 
 UploadProgress.prototype.end = function() {
-console.log('up end');
     var p = this.p;
     p.fadeOut(1000, function() {
-console.log('up remove');
 	p.remove();
-console.log('up removed');
     });
     this.draw();
 };
@@ -297,12 +281,10 @@ function connect() {
 	restoreFiles();
     });
     socket.on('message', function(data){
-console.log(data);
 	var json;
 	try {
 	    json = JSON.parse(data);
 	} catch (x) {
-	    console.error("Cannot parse: " + data);
 	    return;
 	}
 
