@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>noatta.ch: About</title>
+    <link type="text/css" rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <div class="head">
+      <h1><span class="rouge">no</span>atta<span class="rouge">.</span>ch</h1>
+      <p class="slogan">Instant Personal File Sharing</p>
+    </div>
+
+    <div id="dashboard" class="content">
+
+      <p>
+      You can follow <a
+      href="http://twitter.com/astro1138">@astro1138</a> on
+      Twitter. E-mail detailed problem descriptions to <a href="mailto:astro@spaceboyz.net">astro@spaceboyz.net</a>.
+      </p>
+      
+      <h2>Why?</h2>
+      <p>
+      There are dropboxen and share hosters, but often, you'll want to
+      share files only once, temporarily, with a limited set of
+      recipients. That's what noatta.ch is made for: just point your
+      browser at <a href="http://noatta.ch/">http://noatta.ch/</a> and
+      pass the the new URL to the people you want to share with.
+      </p>
+
+      <h2>How?</h2>
+      <p>
+      The server side runs on Node.js, together with Connect as the
+      HTTP middleware. Communication is leveraged by Socket.io, but
+      uploads are fairly normal XMLHttpRequests (AJAX) using the
+      latest features (sendAsBinary &amp; upload events).
+      </p>
+
+      <h2>Browser support?</h2>
+      <p>
+      On-demand sharing requires the <a
+      href="http://caniuse.com/#feat=fileapi">File API</a>.
+      </p>
+
+      <h2>It crashed my browser!</h2>
+      <p>
+      If you're sharing big files with many people I recommend good
+      old BitTorrent.
+      </p>
+
+      <h2>IP addresses?</h2>
+      <p>
+      Before any authority demands permanent logging of the metadata I
+      want to auto-expose evil people. You've got nothing to fear if
+      you're sharing temporarily with a limited set of recipients.
+      </p>
+
+      <h2>Why target="_blank"?</h2>
+      <p>
+      I saw it as the only reliable way to keep the page open when
+      clicking on downloads.
+      </p>
+      
+      <h2>¥€$!</h2>
+      <p>
+      Luckily I've got a coupon code for the brand new <a
+      href="http://joyent.com/">Joyent</a> Node.js hosting. Other than
+      that, .ch domains are quite pricy. Support me for this project:
+      <a href="http://flattr.com/thing/69810/noatta-ch"><img src="http://api.flattr.com/button/button-compact-static-100x17.png" alt="Flattr this" title="Flattr this" border="0" /></a>
+      </p>
+
+    </div>
+  </body>
+</html>

@@ -79,6 +79,10 @@ div.content .left {
 div.content .foot {
   clear: both;
 }
+.about {
+  text-align: center;
+  font-size: x-small;
+}
 
 h2 {
   font-weight: bold;
