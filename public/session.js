@@ -68,6 +68,9 @@ console.log('readyState: '+xhr.readyState);
 	    if (xhr.readyState === 4)  // DONE
 		shut();
 	};
+	xhr.onabort = shut;
+	xhr.ontimeout = shut;
+	xhr.onerror = shut;
 	up.trackXHR(xhr);
 console.log('post to '+document.location.pathname + '/f' + that.id + '/' + token);
 	xhr.open("POST",

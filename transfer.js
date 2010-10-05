@@ -14,6 +14,23 @@ function Transfer(shareInfo, req, res) {
 			 'Content-Length': shareInfo.size });
 
     req.on('error', function() {
+console.log('downReq error');
+	that.end();
+    });
+    res.on('error', function() {
+console.log('downRes error');
+	that.end();
+    });
+    res.on('end', function() {
+console.log('downRes end');
+	that.end();
+    });
+    req.socket.on('error', function() {
+console.log('down sock error');
+	that.end();
+    });
+    res.socket.on('close', function() {
+console.log('down sock close');
 	that.end();
     });
 
@@ -54,6 +71,7 @@ Transfer.prototype.acceptUpload = function(req, res) {
     });
     req.on('end', function() {
 	that.downRes.write(decoder('', true), 'binary');
+	that.uploadFinished = true;
 	that.end();
     });
 
@@ -61,9 +79,12 @@ Transfer.prototype.acceptUpload = function(req, res) {
 };
 
 Transfer.prototype.end = function() {
-console.log({transferEnd:this});
+console.log('transfer end');
     if (this.upRes) {
+	console.log('end upRes');
 	this.upRes.end();
+	if (!this.uploadFinished)
+	    this.upReq.socket.destroy();
     } else
 	this.emit('invalidate');
 
