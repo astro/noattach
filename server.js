@@ -39,11 +39,12 @@ function roomMiddleware(req, res, next) {
 	       (m = path.match(/^\/f(\d+)$/))) {
 	var shareId = m[1];
 	var share = room.getShare(shareId);
-	if (share)
+	if (share) {
+	    var filename = share.name.replace(/\"/g, '');
 	    res.writeHead(200, { 'Content-Type': 'application/octet-stream',
-				 'Content-Disposition': 'attachment; filename=' + share.name,
+				 'Content-Disposition': 'attachment; filename="' + filename + '"',
 				 'Content-Length': share.size });
-	else
+	} else
 	    res.writeHead(404, { });
 	res.end();
     } else if (req.method === 'GET' &&
