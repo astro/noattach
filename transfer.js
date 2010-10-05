@@ -119,7 +119,6 @@ function base64Decoder() {
 	}
 
 	_out += data.length;
-console.log({'in':_in, out:_out});
 	return data;
     };
 }
