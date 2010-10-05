@@ -25,7 +25,7 @@ function Share(file, shareInfo) {
     this.file = file;
     this.name = shareInfo.name;
 
-    var div = $('<div class="box"><p><a class="name file"></a></p><p class="control"><span class="size"></span> <a href="#" class="remove" title="Remove">×</a></p></div>');
+    var div = $('<div class="box share"><p><a class="name file"></a></p><p class="control"><span class="size"></span> <a href="#" class="remove" title="Remove">×</a></p></div>');
     div.find('.name').text(shareInfo.name);
     div.find('.name').attr('href', document.location.pathname + '/f' + this.id);
     div.find('.size').text(humanSize(shareInfo.size));
@@ -33,7 +33,9 @@ function Share(file, shareInfo) {
 	ev.preventDefault();
 	that.remove();
     });
+    div.hide();
     $('#shares').append(div);
+    div.slideDown(500);
     this.div = div;
 }
 
@@ -181,15 +183,18 @@ function RemoteShare(shareInfo) {
     }
 
     li.hide();
-    li.slideDown(500);
     $('#remote').append(li);
+    li.slideDown(500);
 
     this.li = li;
     this.id = shareInfo.id;
 }
 
 RemoteShare.prototype.remove = function() {
-    this.li.remove();
+    var li = this.li;
+    li.slideUp(500, function() {
+	li.remove();
+    });
     delete shares[this.id];
 };
 
@@ -207,6 +212,23 @@ function fileChosen(ev) {
     }
     $('#file')[0].value = null;
 };
+
+// after reconnect:
+function restoreFiles() {
+    var delay = 0;
+    for(var name in fileCache)
+	if (fileCache.hasOwnProperty(name))
+	    // call immediately, just to have scope for file
+	    // independent of name
+	    (function(file) {
+		 delay += Math.floor(100 + Math.random() * 1000);
+		 window.setTimeout(function() {
+		     send({ share: { name: file.name,
+				     size: file.size,
+				     type: file.type } });
+		 }, delay);
+	     })(fileCache[name]);
+}
 
 
 function checkCompatibility() {
@@ -244,7 +266,10 @@ function connect() {
 			                  'xhr-multipart', 'xhr-polling']
 			   });
     var currentSocket = socket;
-console.log(socket);
+    var connectTimeout = window.setTimeout(function() {
+	socket.disconnect();
+	reconnect();
+    }, 10000);
     socket.connect();
 
     send = function(json) {
@@ -253,6 +278,7 @@ console.log(socket);
 
     socket.on('connect', function(){
 	send({ join: document.location.pathname });
+	window.clearTimeout(connectTimeout);
 	$('#loading').hide();
 	$('#dashboard').show();
 
@@ -261,6 +287,10 @@ console.log(socket);
 	    $('.left').find('.box').last().remove();
 	    $('.left').append('<div class="box"><p class="note">Sorry, your browser lacks some important features to share files. We recommend upgrading to <a href="http://www.getfirefox.com/">Firefox</a> 3.6 or 4.0 &amp; <a href="http://www.google.com/chrome">Chromium</a> 6 or 7.</p></div>');
 	}
+
+	$('#remote').find('li').remove();
+	$('.left').find('.share').remove();
+	restoreFiles();
     });
     socket.on('message', function(data){
 console.log(data);
@@ -297,7 +327,6 @@ console.log(data);
     });
 
     var reconnect = function() {
-console.log({reconnect:arguments});
 	$('#dashboard').hide();
 	$('#loading').show();
 

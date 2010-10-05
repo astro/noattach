@@ -1,4 +1,3 @@
-! keepalive + state restore upon socket reconnect
 file input layout
 
 transfer refactor + download retrying
