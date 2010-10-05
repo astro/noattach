@@ -233,8 +233,8 @@ function checkCompatibility() {
     }
 }
 
-
 var socket = null;
+
 function connect() {
     if (socket !== null)
 	return;
@@ -305,11 +305,7 @@ console.log({reconnect:arguments});
 	    socket = null;
 	window.setTimeout(connect, Math.ceil((0.5 + 3 * Math.random()) * 1000));
     };
-    socket.on('error',  reconnect);
-    socket.on('close', reconnect);
-
-socket.on('close', function() { console.log('close'); });
-socket.on('error', function() { console.log('error'); });
+    socket.on('disconnect', reconnect);
 }
 
 $(document).ready(function() {
