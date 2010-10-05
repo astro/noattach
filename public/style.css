@@ -7,6 +7,15 @@ body {
   font-family: sans-serif;
 }
 
+a {
+  color: #555;
+  text-decoration: none;
+}
+a:hover {
+  color: black;
+  text-decoration: underline;
+}
+
 div.head {
   margin: 0.2em 0;
   padding: 0;

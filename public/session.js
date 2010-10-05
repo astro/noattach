@@ -209,6 +209,31 @@ function fileChosen(ev) {
 };
 
 
+function checkCompatibility() {
+    var features = ["window.XMLHttpRequest",
+		    "window.FileReader",
+		    "window.btoa"];
+    var missing = [];
+
+    for(var i = 0; i < features.length; i++) {
+	var feature = features[i];
+	var present = false;
+	try {
+	    present = (eval(feature) !== undefined);
+	} catch (x) {
+	}
+	if (!present)
+	    missing.push(feature);
+    }
+
+    if (missing.length === 0) {
+	return true;
+    } else {
+	return false;
+    }
+}
+
+
 var socket = null;
 function connect() {
     if (socket !== null)
@@ -230,6 +255,12 @@ console.log(socket);
 	send({ join: document.location.pathname });
 	$('#loading').hide();
 	$('#dashboard').show();
+
+	if (checkCompatibility() === false) {
+	    $('.left').find('h2').text('Sorry');
+	    $('.left').find('.box').last().remove();
+	    $('.left').append('<div class="box"><p class="note">Sorry, your browser lacks some important features to share files. We recommend upgrading to <a href="http://www.getfirefox.com/">Firefox</a> 3.6 or 4.0 &amp; <a href="http://www.google.com/chrome">Chromium</a> 6 or 7.</p></div>');
+	}
     });
     socket.on('message', function(data){
 console.log(data);

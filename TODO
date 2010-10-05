@@ -1,6 +1,5 @@
-connection status
-feature test
+! keepalive + state restore upon socket reconnect
 file input layout
 
-state restore upon socket reconnect
+transfer refactor + download retrying
 range transfers
