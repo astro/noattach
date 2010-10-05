@@ -2,8 +2,8 @@
 <html>
   <head>
     <title>noatta.ch: Instant Personal File Sharing</title>
-    <script type="text/javascript" src="/jquery-1.4.2.min.js"> </script>
-    <script type="text/javascript" src="/socket-io.js"> </script>
+    <script type="application/javascript" src="/jquery-1.4.2.min.js"> </script>
+    <script type="application/javascript" src="/socket-io.js"> </script>
     <script type="application/javascript" src="/session.js"> </script>
     <link type="text/css" rel="stylesheet" href="/style.css">
   </head>
@@ -14,11 +14,10 @@
     </div>
 
     <p id="loading">
+    <noscript>
       You really need JavaScript for this interactive Web app.
+    </noscript>
     </p>
-    <script type="application/javascript">
-      $('#loading').text("Plumbing the pipe...");
-    </script>
 
     <div id="dashboard" class="content">
 
@@ -59,9 +58,5 @@
     <p class="shareurl">
       Pass the URL to your peers!
     </p>
-
-    <script type="application/javascript">
-      $('#dashboard').hide();
-    </script>
   </body>
 </html>

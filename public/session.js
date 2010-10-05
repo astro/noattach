@@ -325,6 +325,8 @@ function connect() {
 }
 
 $(document).ready(function() {
+    $('#loading').text("Plumbing the pipe...");
+    $('#dashboard').hide();
     connect();
 
     /* New file */
