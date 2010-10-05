@@ -50,7 +50,9 @@ Transfer.prototype.acceptUpload = function(req, res) {
 
     var decoder;
     console.log({reqContentType:req.headers['content-type']});
-    if (req.headers['content-type'] === 'application/base64') {
+    if (typeof req.headers['content-type'] === 'string'
+	&& req.headers['content-type'].indexOf('application/base64') >= 0) {
+
 	req.setEncoding('utf-8');
 	decoder = base64Decoder();
     } else {
