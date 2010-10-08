@@ -1,3 +1,9 @@
+favicon
+a/@type, file name in download url
+stats
+
+gzip, yslow, http://gist.github.com/615823
+
 file input layout
 
 transfer refactor + download retrying
