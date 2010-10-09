@@ -9,6 +9,25 @@ var ROOM_PREFIX = 'r';
 var ROOM_REGEXP = /^\/r(\d{6,24})(.*)/;
 var PUBLIC = __dirname + '/public';
 
+var stats = { room: { view: 0,
+		      post: 0,
+		      head: 0,
+		      get: 0 },
+	      redirect: 0,
+	      'static': 0,
+	      sockets: 0
+	    };
+
+function statsMiddleware(req, res, next) {
+    if (req.method === 'GET' &&
+	req.url === '/stats.json') {
+
+	res.writeHead(200, { 'Content-Type': 'application/json' });
+	res.end(JSON.stringify(stats));
+    } else
+	next();
+}
+
 function roomMiddleware(req, res, next) {
     var m = req.url.match(ROOM_REGEXP);
     if (!m)
@@ -23,6 +42,8 @@ function roomMiddleware(req, res, next) {
     var path = m[2];
     if (!path) {
 	MiddleWare.respondFile(PUBLIC + '/index.html', 'text/html; charset=utf-8')(req, res, next);
+
+	stats.room.view++;
     } else if (req.method === 'POST' &&
 	       (m = path.match(/^\/f(\d+)\/(\d+)$/))) {
         var shareId = m[1];
@@ -35,6 +56,8 @@ function roomMiddleware(req, res, next) {
 	} else {
 	    transfer.acceptUpload(req, res);
 	}
+
+	stats.room.post++;
     } else if (req.method === 'HEAD' &&
 	       (m = path.match(/^\/f(\d+)$/))) {
 	var shareId = m[1];
@@ -47,6 +70,8 @@ function roomMiddleware(req, res, next) {
 	} else
 	    res.writeHead(404, { });
 	res.end();
+
+	stats.room.head++;
     } else if (req.method === 'GET' &&
 	       (m = path.match(/^\/f(\d+)/))) {
 	var shareId = m[1];
@@ -55,6 +80,8 @@ function roomMiddleware(req, res, next) {
 	    res.writeHead(404, { });
 	    res.end();
 	}
+
+	stats.room.get++;
     } else {
 	res.writeHead(404, { });
 	res.end();
@@ -81,6 +108,8 @@ var MiddleWare = {
 
 	res.writeHead(307, { Location: ROOM_PREFIX + room });
 	res.end();
+
+	stats.redirect++;
     },
 
     respondFile: function(filename, contentType) {
@@ -105,6 +134,8 @@ var MiddleWare = {
 
 		    res.writeHead(200, headers);
 		    res.end(req.method === 'HEAD' ? undefined : data);
+
+		    stats['static']++;
 		}
 
 		fs.readFile(filename, onRead);
@@ -119,6 +150,7 @@ var server = Connect.createServer(
     Connect.gzip(),
     Connect.staticProvider(PUBLIC),
     roomMiddleware,
+    statsMiddleware,
     Connect.errorHandler({ dumpExceptions: true, showStack: true })
 );
 server.listen(parseInt(process.env.PORT, 10) || 8000);
@@ -151,5 +183,9 @@ socketServer.on('connection', function(socket) {
     socket.on('disconnect', function() {
 	if (room)
 	    room.leave(socket);
+
+	stats.sockets--;
     });
+
+    stats.sockets++;
 });
