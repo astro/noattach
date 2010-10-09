@@ -116,6 +116,7 @@ var MiddleWare = {
 var server = Connect.createServer(
     Connect.logger(),
     MiddleWare.on('GET', '/', MiddleWare.redirectRandom),
+    Connect.gzip(),
     Connect.staticProvider(PUBLIC),
     roomMiddleware,
     Connect.errorHandler({ dumpExceptions: true, showStack: true })
