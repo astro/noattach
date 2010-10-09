@@ -20,7 +20,7 @@ function Share(file, shareInfo) {
     this.file = file;
     this.name = shareInfo.name;
 
-    var div = $('<div class="box share"><p><a class="name file" href="#" target="_blank"></a></p><p class="control"><span class="size"></span> <a href="#" class="remove" title="Remove">×</a></p></div>');
+    var div = $('<div class="box share"><p><a class="name file" href="#" type="application/octet-stream" target="_blank"></a></p><p class="control"><span class="size"></span> <a href="#" class="remove" title="Remove">×</a></p></div>');
     div.find('.name').text(shareInfo.name);
     div.find('.name').attr('href', document.location.pathname + '/f' + this.id);
     div.find('.size').text(humanSize(shareInfo.size));
@@ -157,7 +157,7 @@ UploadProgress.prototype.end = function() {
 };
 
 function RemoteShare(shareInfo) {
-    var li = $('<li><a class="file" href="#" target="_blank"></a> <span class="meta"><span class="size"></span></span></li>');
+    var li = $('<li><a class="file" href="#" type="application/octet-stream" target="_blank"></a> <span class="meta"><span class="size"></span></span></li>');
     var a = li.find('a');
     a.text(shareInfo.name);
     a.attr('href', document.location.pathname + '/f' + shareInfo.id);
