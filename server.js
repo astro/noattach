@@ -48,7 +48,7 @@ function roomMiddleware(req, res, next) {
 	    res.writeHead(404, { });
 	res.end();
     } else if (req.method === 'GET' &&
-	       (m = path.match(/^\/f(\d+)$/))) {
+	       (m = path.match(/^\/f(\d+)/))) {
 	var shareId = m[1];
 	var transfer = room.requestTransfer(shareId, req, res);
 	if (!transfer) {
