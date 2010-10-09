@@ -59,7 +59,7 @@ function roomMiddleware(req, res, next) {
 
 	stats.room.post++;
     } else if (req.method === 'HEAD' &&
-	       (m = path.match(/^\/f(\d+)$/))) {
+	       (m = path.match(/^\/f(\d+)/))) {
 	var shareId = m[1];
 	var share = room.getShare(shareId);
 	if (share) {
