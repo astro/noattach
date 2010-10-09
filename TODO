@@ -1,9 +1,5 @@
-a/@type, file name in download url
-stats
+yslow, http://gist.github.com/615823
 
-gzip, yslow, http://gist.github.com/615823
-
-file input layout
-
+upload ratio
 transfer refactor + download retrying
 range transfers
