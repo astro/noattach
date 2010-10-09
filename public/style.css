@@ -46,11 +46,12 @@ h1 .rouge {
 }
 p.slogan {
   padding: 0.2em 2em;
-  margin: 0;
+  padding-left: 8px;
+  margin: 0 0.1em;
   font-weight: bold;
   font-size: small;
   color: #333333;
-  text-shadow: #4d4d4d 0 0 1px;
+  text-shadow: #777 1px 1px 2px;
 }
 
 p#loading {
@@ -88,14 +89,15 @@ h2 {
   font-weight: bold;
   font-size: x-large;
   font-variant: small-caps;
-  color: #aaa;
-  text-shadow: #ddd 2px 1px 0;
+  color: #777;
+  text-shadow: #ccc 2px 1px 0;
+  letter-spacing: 0.2em;
   margin: 0;
   padding: 0.1em 0;
 }
 
 .note {
-  color: #aaa;
+  color: #777;
   font-size: small;
 }
 
@@ -145,11 +147,12 @@ h2 {
 }
 .file {
   text-decoration: none;
-  color: #777;
+  color: #333;
 }
 a.file:hover {
   text-decoration: none;
-  color: #333;
+  color: black;
+  text-shadow: white 1px 1px 0;
 }
 
 .upload canvas { 
@@ -175,7 +178,7 @@ ul#remote li .meta {
   font-weight: bold;
 }
 .by {
-  text-shadow: #aaa 0 1px 0;
+  text-shadow: white 0 1px 0;
   font-family: monospace;
 }
 
@@ -183,7 +186,7 @@ label[for='file']:before {
   content: url(/add.png);
 }
 label[for='file'] {
-  color: #777;
+  color: #800;
   font-weight: bold;
   font-size: small;
 }
