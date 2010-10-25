@@ -1,4 +1,3 @@
-var transfer = require('./transfer');
 var util = require('./util');
 
 
@@ -6,7 +5,7 @@ function Room(id) {
     this.id = id;
     this.shares = {};
     this.sockets = [];
-    this.transfers = {};  // pending transfers by token
+    this.transferCbs = {};  // pending transferCbs by token
 }
 
 Room.prototype.join = function(socket) {
@@ -99,52 +98,70 @@ Room.prototype.receive = function(socket, json) {
     }
 };
 
-Room.prototype.getTransfer = function(shareId, token) {
-    if (this.transfers.hasOwnProperty(token) &&
-	this.transfers[token].shareInfo.id === shareId)
-	return this.transfers[token];
-    else
-	return null;
-};
-
-/**
- * returns null or shareInfo
- */
-Room.prototype.requestTransfer = function(shareId, req, res) {
-    var that = this;
-
-    if (!this.shares.hasOwnProperty(shareId))
-	return null;
-
-    // Parameters
-    var share = this.shares[shareId];
+Room.prototype.makeTransferToken = function() {
     var token = '';
     do {
 	token = util.generateToken(32);
-    } while(this.transfers.hasOwnProperty(token));
+    } while(this.transferCbs.hasOwnProperty(token));
+    return token;
+};
+
+Room.prototype.getTransferCallback = function(shareId /* unused */, token) {
+    if (this.transferCbs.hasOwnProperty(token)) {
+
+	var cb = this.transferCbs[token];
+	delete this.transferCbs[token];
+	return cb;
+    } else
+	return null;
+};
+
+/* invokes cb() for timeout */
+Room.prototype.requestTransfer = function(shareId, offset, by, cb) {
+    if (!this.shares.hasOwnProperty(shareId)) {
+	console.warn('Transfer for unknown shareId');
+	return;
+    }
+
+    // Parameters
+    var share = this.shares[shareId];
+    var token = this.addTransfer(shareId, cb);
 
     // Send request
     var msg = { transfer: { id: shareId,
 			    token: token,
-			    by: req.connection.remoteAddress } };
+			    offset: offset,
+			    by: by } };
 console.log(msg);
     share.socket.send(JSON.stringify(msg));
-
-    // Build result transfer
-    var t = new transfer.Transfer(share.info, req, res);
-    this.transfers[token] = t;
-    t.on('invalidate', function() {
-	// emitted on either timeout or connection
-	delete that.transfers[token];
-    });
-    return t;
 };
+
+/* later, instead of the socket.io connection, the ajax response is
+ * used for the token, in order to maintain the upload context in the
+ * advent of multiple chunks.
+ *
+ * returns: token
+ */
+Room.prototype.addTransfer = function(shareId, cb) {
+    var that = this;
+    var token = this.makeTransferToken();
+
+    this.transferCbs[token] = cb;
+    setTimeout(function() {
+	var cb = that.getTransferCallback(shareId, token);
+	if (cb)
+	    cb();
+    }, 30 * 1000);
+
+    return token;
+};
+
 
 /**
  * returns null or shareInfo
  */
 Room.prototype.getShare = function(shareId) {
-    return this.shares.hasOwnProperty(shareId) ? this.shares[shareId] : null;
+    return this.shares.hasOwnProperty(shareId) ? this.shares[shareId].info : null;
 };
 
 var rooms = {

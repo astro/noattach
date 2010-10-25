@@ -1,17 +1,41 @@
 var sys = require('sys');
 var EventEmitter = require('events').EventEmitter;
 
-function Transfer(shareInfo, req, res) {
+function Transfer(shareInfo, room, req, res) {
     var that = this;
     EventEmitter.call(this);
 
     this.shareInfo = shareInfo;
+    this.room = room;
     this.downReq = req;
     this.downRes = res;  // HTTP response
 
-    res.writeHead(200, { 'Content-Type': 'application/octet-stream',
-			 'Content-Disposition': 'attachment; filename=' + shareInfo.name,
-			 'Content-Length': shareInfo.size });
+    var code = 200;
+    var filename = shareInfo.name.replace(/\"/g, '');
+    var headers = { 'Content-Type': 'application/octet-stream',
+		    'Content-Disposition': 'attachment; filename="' + filename + '"',
+		    'Accept-Ranges': 'bytes' };
+
+    var m;
+    if (req.headers.range &&
+        (m = req.headers.range.match(/bytes=(\d+)/))) {
+
+	this.offset = parseInt(m[1], 10);
+
+	code = 206;
+	headers['Content-Length'] = shareInfo.size - this.offset;
+	headers['Content-Range'] = 'bytes ' + this.offset +
+	    '-' + (shareInfo.size - 1) +
+	    '/' + shareInfo.size;
+    } else {
+	this.offset = 0;
+
+	code = 200;
+	headers['Content-Length'] = shareInfo.size;
+    }
+
+    room.requestTransfer(shareInfo.id, this.offset, req.connection.remoteAddress,
+			 this.makeTransferCallback());
 
     req.on('error', function() {
 console.log('downReq error');
@@ -34,24 +58,32 @@ console.log('down sock close');
 	that.end();
     });
 
-    this.timeout = setTimeout(function() {
-	that.end();
-    }, 30 * 1000);
+console.log(headers);
+    res.writeHead(code, headers);
 }
+
 sys.inherits(Transfer, EventEmitter);
 module.exports.Transfer = Transfer;
+
+Transfer.prototype.makeTransferCallback = function() {
+    var that = this;
+    return function(req, res) {
+	if (req && res)
+	    that.acceptUpload(req, res);
+	else
+	    that.end();
+    };
+};
 
 Transfer.prototype.acceptUpload = function(req, res) {
     var that = this;
 
-    this.emit('invalidate');
     this.upReq = req;
     this.upRes = res;
 
     var decoder;
-    console.log({reqContentType:req.headers['content-type']});
-    if (typeof req.headers['content-type'] === 'string'
-	&& req.headers['content-type'].indexOf('application/base64') >= 0) {
+    if (typeof req.headers['content-type'] === 'string' &&
+	req.headers['content-type'].indexOf('application/base64') >= 0) {
 
 	req.setEncoding('utf-8');
 	decoder = base64Decoder();
@@ -62,8 +94,10 @@ Transfer.prototype.acceptUpload = function(req, res) {
 
     var buf = '';
     req.on('data', function(data) {
-	var written = that.downRes.write(decoder(data), 'binary');
-	if (!written) {
+	var outData = decoder(data);
+	var flushed = that.downRes.write(outData, 'binary');
+	that.offset += outData.length;
+	if (!flushed) {
 	    req.pause();
 	    console.log('pause');
 	}
@@ -73,9 +107,18 @@ Transfer.prototype.acceptUpload = function(req, res) {
 	req.resume();
     });
     req.on('end', function() {
-	that.downRes.write(decoder('', true), 'binary');
-	that.uploadFinished = true;
-	that.end();
+	var outData = decoder('', true);
+	that.downRes.write(outData, 'binary');
+	that.offset += outData.length;
+
+	if (that.offset < that.shareInfo.size) {
+	    // next chunk
+	    var token = that.room.addTransfer(that.shareInfo.id, that.makeTransferCallback());
+	    res.end(token);
+	} else {
+	    // upload done
+	    that.end();
+	}
     });
 
     res.writeHead(200, { });
@@ -86,10 +129,9 @@ console.log('transfer end');
     if (this.upRes) {
 	console.log('end upRes');
 	this.upRes.end();
-	if (!this.uploadFinished)
+	if (this.upReq.socket)
 	    this.upReq.socket.destroy();
-    } else
-	this.emit('invalidate');
+    }
 
     this.downRes.end();
 };

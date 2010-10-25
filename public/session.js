@@ -46,19 +46,46 @@ Share.prototype.remove = function() {
     delete fileCache[this.name];
 };
 
-Share.prototype.upload = function(token, by) {
+var CHUNK_LENGTH = 512 * 1024;
+
+Share.prototype.upload = function(token, offset, by) {
     var that = this;
 
     var up = new UploadProgress(this.div, by);
-    var shut = function() {
-	up.end();
+
+    var start = function() {
+	if (that.file.slice) {
+	    var sendChunk = function(token1, offset1) {
+		var length = Math.min(that.file.size - offset1, CHUNK_LENGTH);
+		var blob = that.file.slice(offset1, length);
+		that.uploadChunk(token1, blob, up, function(token2) {
+		    if (token2) {
+			sendChunk(token2, offset1 + length);
+		    } else
+			up.end();
+		});
+	    };
+	    sendChunk(token, offset);
+	} else {
+	    that.uploadChunk(token, that.file, up, function() {
+		up.end();
+	    });
+	}
     };
+    // give some time to render UploadProgress
+    window.setTimeout(start, 10);
+};
+
+Share.prototype.uploadChunk = function(token, blob, up, cb) {
+    var that = this;
+    var shut = function() { cb(); };
+
     var reader = new FileReader();
     reader.onload = function() {
 	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function() {
 	    if (xhr.readyState === 4)  // DONE
-		shut();
+		cb(xhr.status === 200 ? xhr.responseText : null);
 	};
 	xhr.onabort = shut;
 	xhr.ontimeout = shut;
@@ -77,10 +104,7 @@ Share.prototype.upload = function(token, by) {
     reader.onabort = shut;
     reader.onerror = shut;
 
-    // give some time to render UploadProgress
-    window.setTimeout(function() {
-	reader.readAsBinaryString(that.file);
-    }, 10);
+    reader.readAsBinaryString(blob);
 };
 
 function UploadProgress(parent, by) {
@@ -305,7 +329,7 @@ function connect() {
 	}
 	if (json.transfer) {
 	    // TODO: implement long path for error case
-	    shares[json.transfer.id].upload(json.transfer.token, json.transfer.by);
+	    shares[json.transfer.id].upload(json.transfer.token, json.transfer.offset, json.transfer.by);
 	}
 	if (json.unshare &&
 	    json.unshare.id &&

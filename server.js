@@ -4,6 +4,7 @@ var io = require('socket.io');
 
 var rooms = require('./rooms');
 var util = require('./util');
+var transfer = require('./transfer');
 
 var ROOM_PREFIX = 'r';
 var ROOM_REGEXP = /^\/r(\d{6,24})(.*)/;
@@ -48,25 +49,26 @@ function roomMiddleware(req, res, next) {
 	       (m = path.match(/^\/f(\d+)\/(\d+)$/))) {
         var shareId = m[1];
 	var token = m[2];
-	var transfer = room.getTransfer(shareId, token);
-	if (!transfer) {
+	var cb = room.getTransferCallback(shareId, token);
+	if (!cb) {
 	    console.warn({ mismatch: { shareId: shareId, token: token } });
 	    res.writeHead(404, { });
 	    res.end();
 	} else {
-	    transfer.acceptUpload(req, res);
+	    /* transferCb success! */
+	    cb(req, res);
 	}
 
 	stats.room.post++;
     } else if (req.method === 'HEAD' &&
 	       (m = path.match(/^\/f(\d+)/))) {
 	var shareId = m[1];
-	var share = room.getShare(shareId);
-	if (share) {
-	    var filename = share.name.replace(/\"/g, '');
+	var shareInfo = room.getShare(shareId);
+	if (shareInfo) {
+	    var filename = shareInfo.name.replace(/\"/g, '');
 	    res.writeHead(200, { 'Content-Type': 'application/octet-stream',
 				 'Content-Disposition': 'attachment; filename="' + filename + '"',
-				 'Content-Length': share.size });
+				 'Content-Length': shareInfo.size });
 	} else
 	    res.writeHead(404, { });
 	res.end();
@@ -75,8 +77,11 @@ function roomMiddleware(req, res, next) {
     } else if (req.method === 'GET' &&
 	       (m = path.match(/^\/f(\d+)/))) {
 	var shareId = m[1];
-	var transfer = room.requestTransfer(shareId, req, res);
-	if (!transfer) {
+	var shareInfo = room.getShare(shareId);
+	if (shareInfo) {
+	    // good, transfer takes control of req & res now
+	    new transfer.Transfer(shareInfo, room, req, res);
+	} else {
 	    res.writeHead(404, { });
 	    res.end();
 	}
