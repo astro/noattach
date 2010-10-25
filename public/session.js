@@ -58,7 +58,7 @@ Share.prototype.upload = function(token, offset, by) {
 	    var sendChunk = function(token1, offset1) {
 		var length = Math.min(that.file.size - offset1, CHUNK_LENGTH);
 		var blob = that.file.slice(offset1, length);
-		that.uploadChunk(token1, blob, up, function(token2) {
+		that.uploadChunk(token1, blob, 0, up, function(token2) {
 		    if (token2) {
 			sendChunk(token2, offset1 + length);
 		    } else
@@ -67,7 +67,7 @@ Share.prototype.upload = function(token, offset, by) {
 	    };
 	    sendChunk(token, offset);
 	} else {
-	    that.uploadChunk(token, that.file, up, function() {
+	    that.uploadChunk(token, that.file, offset, up, function() {
 		up.end();
 	    });
 	}
@@ -76,12 +76,16 @@ Share.prototype.upload = function(token, offset, by) {
     window.setTimeout(start, 10);
 };
 
-Share.prototype.uploadChunk = function(token, blob, up, cb) {
+Share.prototype.uploadChunk = function(token, blob, blobOffset, up, cb) {
     var that = this;
     var shut = function() { cb(); };
 
     var reader = new FileReader();
     reader.onload = function() {
+	var data = (blobOffset > 0) ?
+	    reader.result.slice(blobOffset) :
+	    reader.result;
+
 	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function() {
 	    if (xhr.readyState === 4)  // DONE
@@ -95,10 +99,10 @@ Share.prototype.uploadChunk = function(token, blob, up, cb) {
 		 document.location.pathname + '/f' + that.id + '/' + token);
 	if (xhr.sendAsBinary) {
 	    xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-	    xhr.sendAsBinary(reader.result);
+	    xhr.sendAsBinary(data);
 	} else {
 	    xhr.setRequestHeader('Content-Type', 'application/base64');
-	    xhr.send(window.btoa(reader.result));
+	    xhr.send(window.btoa(data));
 	}
     };
     reader.onabort = shut;
