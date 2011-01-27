@@ -51,34 +51,32 @@ var CHUNK_LENGTH = 512 * 1024;
 Share.prototype.upload = function(token, offset, by) {
     var that = this;
 
-    var up = new UploadProgress(this.div, by);
+    var up = new UploadProgress(this.div, offset, this.file.size, by);
 
-    var start = function() {
-	if (that.file.slice) {
-	    var sendChunk = function(token1, offset1) {
-		var length = Math.min(that.file.size - offset1, CHUNK_LENGTH);
-		var blob = that.file.slice(offset1, length);
-		that.uploadChunk(token1, blob, 0, up, function(token2) {
-		    if (token2) {
-			sendChunk(token2, offset1 + length);
-		    } else
-			up.end();
-		});
-	    };
-	    sendChunk(token, offset);
-	} else {
-	    that.uploadChunk(token, that.file, offset, up, function() {
-		up.end();
+    if (that.file.slice) {
+	var sendChunk = function(token1, offset1) {
+	    var length = Math.min(that.file.size - offset1, CHUNK_LENGTH);
+	    up.chunkReading(offset1, length);
+	    var blob = that.file.slice(offset1, length);
+	    that.uploadChunk(token1, blob, 0, up, function(token2) {
+		if (token2)
+		    sendChunk(token2, offset1 + length);
+		else
+		    up.end();
 	    });
-	}
-    };
-    // give some time to render UploadProgress
-    window.setTimeout(start, 10);
+	};
+	sendChunk(token, offset);
+    } else {
+	up.chunkReading(offset, that.file.size);
+	that.uploadChunk(token, that.file, offset, up, function() {
+	    up.end();
+	});
+    }
 };
 
 Share.prototype.uploadChunk = function(token, blob, blobOffset, up, cb) {
     var that = this;
-    var shut = function() { cb(); };
+    var shut = function() { cb(); };  // w/o arguments
 
     var reader = new FileReader();
     reader.onload = function() {
@@ -99,19 +97,24 @@ Share.prototype.uploadChunk = function(token, blob, blobOffset, up, cb) {
 		 document.location.pathname + '/f' + that.id + '/' + token);
 	if (xhr.sendAsBinary) {
 	    xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+console.log('sending '+data.length);
 	    xhr.sendAsBinary(data);
 	} else {
 	    xhr.setRequestHeader('Content-Type', 'application/base64');
+console.log('sending64 '+data.length);
 	    xhr.send(window.btoa(data));
 	}
     };
     reader.onabort = shut;
     reader.onerror = shut;
 
-    reader.readAsBinaryString(blob);
+    // give some time to render UploadProgress
+    //window.setTimeout(function() {
+	reader.readAsBinaryString(blob);
+    //}, 10);
 };
 
-function UploadProgress(parent, by) {
+function UploadProgress(parent, offset, total, by) {
     var p = $('<p class="upload"><canvas width="160" height="16"></canvas> <span class="by"></span></p>');
     this.p = p;
     parent.append(p);
@@ -119,7 +122,9 @@ function UploadProgress(parent, by) {
     if (by)
 	p.find('.by').text(by);
 
-    this.progress = -1;
+    this.chunkProgress = -1;
+    this.offset = 0;
+    this.total = total;
     this.draw();
 }
 
@@ -144,15 +149,30 @@ UploadProgress.prototype.draw = function() {
     line(1, h - 1, w - 2, h - 1);  // bottom
     line(w - 1, 1, w - 1, h - 2);  // right*/
 
-    if (this.progress < 0) {
-	ctx.globalAlpha = 0.2;
-	ctx.fillStyle = '#800000';
-	ctx.fillRect(1, 1, w - 2, h - 2);
-    } else {
-	ctx.globalAlpha = 0.8;
-	ctx.fillStyle = '#AA0000';
-	ctx.fillRect(1, 1, this.progress * (w - 2), h - 2);
+    var bar = function(x1, x2, alpha, style) {
+	ctx.globalAlpha = alpha;
+	ctx.fillStyle = style;
+	ctx.fillRect(Math.floor(x1 * (w - 2) + 1), 1,
+		     Math.floor((x2 - x1) * (w - 2)), h - 2);
+    };
+
+    // previous chunks
+    if (this.offset > 0)
+	bar(0, this.offset / this.total, 1.0, '#AA0000');
+    // current chunk shade
+    bar(this.offset / this.total, (this.offset + this.chunkLength) / this.total, 0.2, '#800000');
+    // current chunk progress
+    if (this.chunkProgress >= 0) {
+	console.log(JSON.stringify({pC:this.offset/this.total,cCs:(this.offset + this.chunkLength) / this.total,cC:(this.offset + (this.chunkProgress * this.chunkLength)) / this.total}));
+	bar(this.offset / this.total, (this.offset + (this.chunkProgress * this.chunkLength)) / this.total, 1.0, '#AA0000');
     }
+};
+
+UploadProgress.prototype.chunkReading = function(offset, length) {
+    this.chunkProgress = -1;
+    this.offset = offset;
+    this.chunkLength = length;
+    this.draw();
 };
 
 UploadProgress.prototype.trackXHR = function(xhr, by) {
@@ -164,16 +184,13 @@ UploadProgress.prototype.trackXHR = function(xhr, by) {
     }
 
     xhr.upload.onloadstart = function() {
-	that.progress = 0;
+	that.chunkProgress = 0;
 	that.draw();
     };
     xhr.upload.onprogress = function(ev) {
-	that.progress = ev.loaded / ev.total;
+	that.chunkProgress = ev.loaded / ev.total;
+console.log(JSON.stringify({onprogress:that.chunkProgress}));
 	that.draw();
-    };
-    xhr.upload.onloadend = function() {
-	that.progress = 1;
-	that.end();
     };
 };
 
@@ -333,6 +350,7 @@ function connect() {
 	}
 	if (json.transfer) {
 	    // TODO: implement long path for error case
+console.log('transfer: '+JSON.stringify(json.transfer));
 	    shares[json.transfer.id].upload(json.transfer.token, json.transfer.offset, json.transfer.by);
 	}
 	if (json.unshare &&
