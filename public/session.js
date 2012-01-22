@@ -53,16 +53,21 @@ Share.prototype.upload = function(token, offset, by) {
 
     var up = new UploadProgress(this.div, offset, this.file.size, by);
 
-    if (that.file.slice) {
+    var slice = this.file.slice || this.file.webkitSlice || this.file.mozSlice;
+    if (slice) {
 	var sendChunk = function(token1, offset1) {
 	    var length = Math.min(that.file.size - offset1, CHUNK_LENGTH);
+	    console.log("sendChunk", {fileSize:that.file.size,offset1:offset1,CL:CHUNK_LENGTH,length:length})
 	    up.chunkReading(offset1, length);
-	    var blob = that.file.slice(offset1, length);
+	    var blob = slice.call(that.file, offset1, offset1 + length);
 	    that.uploadChunk(token1, blob, 0, up, function(token2) {
-		if (token2)
+		if (token2 && length > 0) {
+		    console.log("next token", token2);
 		    sendChunk(token2, offset1 + length);
-		else
+		} else {
+		    console.log("no next token");
 		    up.end();
+		}
 	    });
 	};
 	sendChunk(token, offset);
@@ -80,6 +85,8 @@ Share.prototype.uploadChunk = function(token, blob, blobOffset, up, cb) {
 
     var reader = new FileReader();
     reader.onload = function() {
+	// if the Blob had no slice interface we need to slice the
+	// result string manually:
 	var data = (blobOffset > 0) ?
 	    reader.result.slice(blobOffset) :
 	    reader.result;
@@ -95,13 +102,14 @@ Share.prototype.uploadChunk = function(token, blob, blobOffset, up, cb) {
 	up.trackXHR(xhr);
 	xhr.open("POST",
 		 document.location.pathname + '/f' + that.id + '/' + token);
-	if (xhr.sendAsBinary) {
+	var sendAsBinary = xhr.sendAsBinary || xhr.webkitSendAsBinary || xhr.mozSendAsBinary;
+	if (sendAsBinary) {
 	    xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-console.log('sending '+data.length);
-	    xhr.sendAsBinary(data);
+	    console.log('sending '+data.length);
+	    sendAsBinary.call(xhr, data);
 	} else {
 	    xhr.setRequestHeader('Content-Type', 'application/base64');
-console.log('sending64 '+data.length);
+	    console.log('sending64 '+data.length);
 	    xhr.send(window.btoa(data));
 	}
     };

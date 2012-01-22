@@ -76,6 +76,7 @@ Transfer.prototype.makeTransferCallback = function() {
 };
 
 Transfer.prototype.acceptUpload = function(req, res) {
+console.log("acceptUpload",req,res)
     var that = this;
 
     this.upReq = req;
@@ -94,19 +95,21 @@ Transfer.prototype.acceptUpload = function(req, res) {
 
     var buf = '';
     req.on('data', function(data) {
+console.log('req data', data.length)
 	var outData = decoder(data);
 	var flushed = that.downRes.write(outData, 'binary');
 	that.offset += outData.length;
 	if (!flushed) {
 	    req.pause();
-	    console.log('pause');
+	    //console.log('pause');
 	}
     });
     this.downRes.on('drain', function() {
-	console.log('drain, resume');
+	//console.log('drain, resume');
 	req.resume();
     });
     req.on('end', function() {
+console.log('req end')
 	var outData = decoder('', true);
 	that.downRes.write(outData, 'binary');
 	that.offset += outData.length;
@@ -151,6 +154,7 @@ function base64Decoder() {
 	_in += data.length;
 
 	if (flush) {
+	    console.log("unbase64",data);
 	    data = new Buffer(buf, 'base64');
 	    console.log('flush '+data.length);
 	    buf = '';

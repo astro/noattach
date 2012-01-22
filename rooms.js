@@ -69,7 +69,7 @@ Room.prototype.onShare = function(socket, info) {
 	    len++;
 	} while(this.shares.hasOwnProperty(id));
 	info.id = id;
-	info.by = socket.handshake.address;
+	info.by = socket.handshake.address.address;
 
 	// Add info
 	this.shares[id] = {
