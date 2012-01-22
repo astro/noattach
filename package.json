@@ -1,0 +1,15 @@
+{ "name": "noattach"
+, "version": "1.0.999"
+, "homepage": "http://noatta.ch/"
+, "repositories": [
+  { "type": "git"
+  , "path": "git://github.com/astro/node-xmpp.git"
+  }]
+, "bin":
+  { "noattach": "server.js"
+  }
+, "dependencies":
+  { "socket.io": ">=0.8.7"
+  , "connect": ">=1.8.5"
+  }
+}

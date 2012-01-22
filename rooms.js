@@ -12,12 +12,19 @@ Room.prototype.join = function(socket) {
     this.sockets.push(socket);
 
     // push shares
-console.log(this);
-console.log({push:this.shares});
     for(var shareId in this.shares)
 	if (this.shares.hasOwnProperty(shareId)) {
-	    socket.send(JSON.stringify({ share: this.shares[shareId].info }));
+	    socket.emit('share', this.shares[shareId].info);
 	}
+
+    // set up receive hooks
+    var that = this;
+    socket.on('share', function(info) {
+	that.onShare(socket, info);
+    });
+    socket.on('unshare', function(id) {
+	that.onUnshare(socket, id);
+    });
 };
 
 Room.prototype.leave = function(socket) {
@@ -33,9 +40,8 @@ Room.prototype.leave = function(socket) {
 	    delete this.shares[shareId];
 
 	    // broadcast
-	    var msg = JSON.stringify({ unshare: { id: shareId } });
 	    this.sockets.forEach(function(socket1) {
-		socket1.send(msg);
+		socket1.emit('unshare', shareId);
 	    });
 	}
 
@@ -50,19 +56,20 @@ Room.prototype.isEmpty = function() {
     return this.sockets.length < 1;
 };
 
-Room.prototype.receive = function(socket, json) {
-    if (json.share &&
-	json.share.name &&
-	json.share.size) {
-	// share
-	var info = json.share;
+Room.prototype.onShare = function(socket, info) {
+    if (info &&
+	info.name &&
+	info.size) {
+
+	console.log("share", info);
+
 	var id, len = 4;
 	do {
 	    id = util.generateToken(len);
 	    len++;
 	} while(this.shares.hasOwnProperty(id));
 	info.id = id;
-	info.by = socket.connection.remoteAddress;
+	info.by = socket.handshake.address;
 
 	// Add info
 	this.shares[id] = {
@@ -71,30 +78,29 @@ Room.prototype.receive = function(socket, json) {
 	};
 
 	// Broadcast
-	var msg = JSON.stringify({ share: info });
-//console.log({msg:msg});
-	this.sockets.forEach(function(peerSocket) {
-//console.log([peerSocket.sessionId,socket.sessionId,peerSocket !== socket]);
-	    if (peerSocket !== socket)
-		peerSocket.send(msg);
+	this.sockets.forEach(function(socket1) {
+	    if (socket1 !== socket)
+		socket1.emit('share', info);
 	});
 
 	// Confirm
-	socket.send(JSON.stringify({ shared: info }));
-    } else if (json.unshare && json.unshare.id) {
-	// unshare
-	var shareId = json.unshare.id;
-	if (this.shares.hasOwnProperty(shareId) &&
-	    // Security: only allow to remove owned shares
-	    this.shares[shareId].socket === socket) {
+	socket.emit('shared', info);
+    }
+};
 
-	    // remove
-	    delete this.shares[shareId];
-	    // broadcast
-	    this.sockets.forEach(function(socket1) {
-		socket1.send(JSON.stringify({ unshare: { id: shareId } }));
-	    });
-	}
+Room.prototype.onUnshare = function(socket, shareId) {
+    if (shareId &&
+	this.shares.hasOwnProperty(shareId) &&
+	// Security: only allow to remove owned shares
+	this.shares[shareId].socket === socket) {
+
+	console.log("unshare", shareId);
+
+	delete this.shares[shareId];
+	// broadcast
+	this.sockets.forEach(function(socket1) {
+	    socket1.emit('unshare', shareId);
+	});
     }
 };
 
@@ -128,12 +134,11 @@ Room.prototype.requestTransfer = function(shareId, offset, by, cb) {
     var token = this.addTransfer(shareId, cb);
 
     // Send request
-    var msg = { transfer: { id: shareId,
-			    token: token,
-			    offset: offset,
-			    by: by } };
-console.log(msg);
-    share.socket.send(JSON.stringify(msg));
+    share.socket.emit('transfer',
+		      { id: shareId,
+			token: token,
+			offset: offset,
+			by: by });
 };
 
 /* later, instead of the socket.io connection, the ajax response is

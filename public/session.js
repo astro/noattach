@@ -41,7 +41,7 @@ Share.prototype.remove = function() {
 	div.remove();
     });
 
-    send({ unshare: { id: this.id } });
+    send('unshare', this.id);
     delete shares[this.id];
     delete fileCache[this.name];
 };
@@ -240,9 +240,11 @@ function fileChosen(ev) {
 	var file = files.item(i);
 	fileCache[file.name] = file;
 
-	send({ share: { name: file.name,
-			size: file.size,
-			type: file.type } });
+	send('share',
+	     { name: file.name,
+	       size: file.size,
+	       type: file.type
+	     });
     }
     $('#file')[0].value = null;
 };
@@ -257,9 +259,11 @@ function restoreFiles() {
 	    (function(file) {
 		 delay += Math.floor(100 + Math.random() * 1000);
 		 window.setTimeout(function() {
-		     send({ share: { name: file.name,
-				     size: file.size,
-				     type: file.type } });
+		     send('share',
+			  { name: file.name,
+			    size: file.size,
+			    type: file.type
+			  });
 		 }, delay);
 	     })(fileCache[name]);
 }
@@ -290,31 +294,19 @@ function checkCompatibility() {
     }
 }
 
-var socket = null;
+var connecting = false;
 
 function connect() {
-    if (socket !== null)
+    if (connecting)
 	return;
+    connecting = true;
 
     window.WEB_SOCKET_SWF_LOCATION = '/WebSocketMain.swf';
-    socket = new io.Socket(null,
-			   { transports: ['websocket', 'htmlfile',
-			                  'xhr-multipart', 'xhr-polling']
-			   });
-    var currentSocket = socket;
-    var connectTimeout = window.setTimeout(function() {
-	socket.disconnect();
-	reconnect();
-    }, 10000);
-    socket.connect();
-
-    send = function(json) {
-	socket.send(JSON.stringify(json));
-    };
+    var socket = new io.connect("/noattach");
 
     socket.on('connect', function(){
-	send({ join: document.location.pathname });
-	window.clearTimeout(connectTimeout);
+	send = socket.emit.bind(socket);
+	socket.emit('join', document.location.pathname);
 	$('#loading').hide();
 	$('#dashboard').show();
 
@@ -328,36 +320,37 @@ function connect() {
 	$('.left').find('.share').remove();
 	restoreFiles();
     });
-    socket.on('message', function(data){
-	var json;
-	try {
-	    json = JSON.parse(data);
-	} catch (x) {
-	    return;
-	}
-
-	if (json.shared && json.shared.id !== null) {
+    socket.on('shared', function(info){
+	if (info && info.id !== null) {
 	    // Own share confirmed
-	    if (fileCache[json.shared.name]) {
-		shares[json.shared.id] = new Share(fileCache[json.shared.name], json.shared);
+	    if (fileCache[info.name]) {
+		shares[info.id] = new Share(fileCache[info.name], info);
 	    } else {
-		send({ unshare: { id: json.shared.id } });
+		socket.emit('unshare', info.id);
 	    }
 	}
-	if (json.share && json.share.id) {
+    });
+    socket.on('share', function(info) {
+	if (info && info.id) {
 	    // New remote share
-	    shares[json.share.id] = new RemoteShare(json.share);
+	    shares[info.id] = new RemoteShare(info);
 	}
-	if (json.transfer) {
+    });
+    socket.on('transfer', function(req) {
+	if (req &&
+	    shares.hasOwnProperty(req.id) &&
+	    req.token &&
+	    req.by) {
+
 	    // TODO: implement long path for error case
-console.log('transfer: '+JSON.stringify(json.transfer));
-	    shares[json.transfer.id].upload(json.transfer.token, json.transfer.offset, json.transfer.by);
+	    shares[req.id].upload(req.token, req.offset, req.by);
 	}
-	if (json.unshare &&
-	    json.unshare.id &&
-	    shares.hasOwnProperty(json.unshare.id)) {
+    });
+    socket.on('unshare', function(shareId) {
+	if (shareId &&
+	    shares.hasOwnProperty(shareId)) {
 	    // already removes itself from shares & the DOM
-	    shares[json.unshare.id].remove();
+	    shares[shareId].remove();
 	}
     });
 
@@ -365,8 +358,7 @@ console.log('transfer: '+JSON.stringify(json.transfer));
 	$('#dashboard').hide();
 	$('#loading').show();
 
-	if (socket === currentSocket)
-	    socket = null;
+	connecting = false;
 	window.setTimeout(connect, Math.ceil((0.5 + 3 * Math.random()) * 1000));
     };
     socket.on('disconnect', reconnect);

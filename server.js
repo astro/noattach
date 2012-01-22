@@ -152,8 +152,7 @@ var MiddleWare = {
 var server = Connect.createServer(
     Connect.logger(),
     MiddleWare.on('GET', '/', MiddleWare.redirectRandom),
-    Connect.gzip(),
-    Connect.staticProvider(PUBLIC),
+    Connect.static(PUBLIC),
     roomMiddleware,
     statsMiddleware,
     Connect.errorHandler({ dumpExceptions: true, showStack: true })
@@ -161,28 +160,17 @@ var server = Connect.createServer(
 server.listen(parseInt(process.env.PORT, 10) || 8000);
 
 var socketServer = io.listen(server);
-socketServer.on('connection', function(socket) {
+socketServer.of('/noattach').on('connection', function(socket) {
+console.log({connection:socket})
     var room;
     // hook socket's message & disconnect
 
-    socket.on('message', function(data) {
-	console.log(data.toString());
-	var json;
-	try {
-	    json = JSON.parse(data);
-	} catch (x) {
-	    console.error(x.stack);
-	    return;
-	}
-
-	if (room) {
-	    room.receive(socket, json);
-	} else if (json && typeof(json.join) == 'string') {
-	    var m = json.join.match(ROOM_REGEXP);
-	    if (m[1] && !m[2]) {
-		room = rooms.get(m[1]);
-		room.join(socket);
-	    }
+    socket.on('join', function(path) {
+	var m = path && path.match(ROOM_REGEXP);
+	if (m && m[1] && !m[2]) {
+	    console.log('join', path, m[1]);
+	    room = rooms.get(m[1]);
+	    room.join(socket);
 	}
     });
     socket.on('disconnect', function() {
