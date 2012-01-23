@@ -172,7 +172,6 @@ UploadProgress.prototype.draw = function() {
     bar(this.offset / this.total, (this.offset + this.chunkLength) / this.total, 0.2, '#800000');
     // current chunk progress
     if (this.chunkProgress >= 0) {
-	console.log(JSON.stringify({pC:this.offset/this.total,cCs:(this.offset + this.chunkLength) / this.total,cC:(this.offset + (this.chunkProgress * this.chunkLength)) / this.total}));
 	bar(this.offset / this.total, (this.offset + (this.chunkProgress * this.chunkLength)) / this.total, 1.0, '#AA0000');
     }
 };
@@ -198,7 +197,6 @@ UploadProgress.prototype.trackXHR = function(xhr, by) {
     };
     xhr.upload.onprogress = function(ev) {
 	that.chunkProgress = ev.loaded / ev.total;
-console.log(JSON.stringify({onprogress:that.chunkProgress}));
 	that.draw();
     };
 };
