@@ -38,27 +38,21 @@ function Transfer(shareInfo, room, req, res) {
 			 this.makeTransferCallback());
 
     req.on('error', function() {
-console.log('downReq error');
 	that.end();
     });
     res.on('error', function() {
-console.log('downRes error');
 	that.end();
     });
     res.on('end', function() {
-console.log('downRes end');
 	that.end();
     });
     req.socket.on('error', function() {
-console.log('down sock error');
 	that.end();
     });
     res.socket.on('close', function() {
-console.log('down sock close');
 	that.end();
     });
 
-console.log(headers);
     res.writeHead(code, headers);
 }
 
@@ -76,7 +70,6 @@ Transfer.prototype.makeTransferCallback = function() {
 };
 
 Transfer.prototype.acceptUpload = function(req, res) {
-console.log("acceptUpload",req,res)
     var that = this;
 
     this.upReq = req;
@@ -90,27 +83,22 @@ console.log("acceptUpload",req,res)
 	decoder = base64Decoder();
     } else {
 	decoder = identityDecoder();
-	console.log('binary upload!');
     }
 
     var buf = '';
     req.on('data', function(data) {
-console.log('req data', data.length)
 	var outData = decoder(data);
 	var flushed = that.downRes.write(outData, 'binary');
 	that.offset += outData.length;
 	if (!flushed) {
 	    req.pause();
-	    //console.log('pause');
 	}
     });
     var onDrain = function() {
-	//console.log('drain, resume');
 	req.resume();
     };
     this.downRes.on('drain', onDrain);
     req.on('end', function() {
-console.log('req end')
 	that.downRes.removeListener('drain', onDrain);
 	var outData = decoder('', true);
 	that.downRes.write(outData, 'binary');
@@ -130,9 +118,7 @@ console.log('req end')
 };
 
 Transfer.prototype.end = function() {
-console.log('transfer end');
     if (this.upRes) {
-	console.log('end upRes');
 	this.upRes.end();
 	if (this.upReq.socket)
 	    this.upReq.socket.destroy();
@@ -156,9 +142,7 @@ function base64Decoder() {
 	_in += data.length;
 
 	if (flush) {
-	    console.log("unbase64",data);
 	    data = new Buffer(buf, 'base64');
-	    console.log('flush '+data.length);
 	    buf = '';
 	} else {
 	    var i = Math.floor(buf.length / 4) * 4;
