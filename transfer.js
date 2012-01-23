@@ -104,12 +104,14 @@ console.log('req data', data.length)
 	    //console.log('pause');
 	}
     });
-    this.downRes.on('drain', function() {
+    var onDrain = function() {
 	//console.log('drain, resume');
 	req.resume();
-    });
+    };
+    this.downRes.on('drain', onDrain);
     req.on('end', function() {
 console.log('req end')
+	that.downRes.removeListener('drain', onDrain);
 	var outData = decoder('', true);
 	that.downRes.write(outData, 'binary');
 	that.offset += outData.length;
