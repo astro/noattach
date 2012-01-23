@@ -35,7 +35,7 @@ function Share(file, shareInfo) {
     this.div = div;
 }
 
-Share.prototype.remove = function() {
+Share.prototype.remove = function(keepFileCache) {
     var div = this.div;
     div.slideUp(250, function() {
 	div.remove();
@@ -43,7 +43,8 @@ Share.prototype.remove = function() {
 
     send('unshare', this.id);
     delete shares[this.id];
-    delete fileCache[this.name];
+    if (!keepFileCache)
+	delete fileCache[this.name];
 };
 
 var CHUNK_LENGTH = 512 * 1024;
@@ -261,19 +262,14 @@ function fileChosen(ev) {
 function restoreFiles() {
     var delay = 0;
     for(var name in fileCache)
-	if (fileCache.hasOwnProperty(name))
-	    // call immediately, just to have scope for file
-	    // independent of name
-	    (function(file) {
-		 delay += Math.floor(100 + Math.random() * 1000);
-		 window.setTimeout(function() {
-		     send('share',
-			  { name: file.name,
-			    size: file.size,
-			    type: file.type
-			  });
-		 }, delay);
-	     })(fileCache[name]);
+	if (fileCache.hasOwnProperty(name)) {
+	    var file = fileCache[name];
+	    send('share',
+		 { name: file.name,
+		   size: file.size,
+		   type: file.type
+		 });
+	}
 }
 
 
@@ -309,7 +305,6 @@ function connect() {
 	return;
     connecting = true;
 
-    window.WEB_SOCKET_SWF_LOCATION = '/WebSocketMain.swf';
     var socket = new io.connect("/noattach");
 
     socket.on('connect', function(){
@@ -362,14 +357,15 @@ function connect() {
 	}
     });
 
-    var reconnect = function() {
+    socket.on('disconnect', function() {
+	for(var id in shares)
+	    if (shares.hasOwnProperty(id))
+		shares[id].remove(true);
 	$('#dashboard').hide();
 	$('#loading').show();
 
 	connecting = false;
-	window.setTimeout(connect, Math.ceil((0.5 + 3 * Math.random()) * 1000));
-    };
-    socket.on('disconnect', reconnect);
+    });
 }
 
 $(document).ready(function() {
