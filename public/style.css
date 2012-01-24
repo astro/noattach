@@ -3,12 +3,12 @@ body {
   margin: 0 auto;
   padding: 0;
   background-color: white;
-  color: #666;
+  color: #333;
   font-family: sans-serif;
 }
 
 a {
-  color: #555;
+  color: black;
   text-decoration: none;
 }
 a:hover {
@@ -16,42 +16,26 @@ a:hover {
   text-decoration: underline;
 }
 
-div.head {
-  margin: 0.2em 0;
-  padding: 0;
-}
-p.shareurl { 
-  content: url(/shareurl.png);
-  position: absolute;
-  top: 0;
-  right: 0;
-  color: #AA0000;
-  font-weight: bold;
-  font-size: small;
+header {
   margin: 0;
-  padding: 0.2em 0.2em 0 0;
+  padding: 0;
+  text-align: center;
 }
 h1 {
   padding: 0;
   margin: 0 0.1em;
-  color: black;
-  text-shadow: #4d4d4d 2px 2px 0;
-  font-size: 500%;
-  letter-spacing: -0.1em;
-  content: url(/logo.png);
+  color: #80e080;
+  text-shadow: #20b020 2px 2px 0;
+  font-size: 600%;
+  font-weight: black;
+  letter-spacing: -0.14em;
 }
-h1 .rouge { 
-  color: #AA0000;
-  text-shadow: #800000 2px 2px 0;
+h1 .dot { 
+  color: #8080e0;
+  text-shadow: #2020b0 2px 2px 0;
 }
 p.slogan {
-  padding: 0.2em 2em;
-  padding-left: 8px;
-  margin: 0 0.1em;
-  font-weight: bold;
-  font-size: small;
-  color: #333333;
-  text-shadow: #777 1px 1px 2px;
+  color: #20b020;
 }
 
 p#loading {
@@ -61,23 +45,30 @@ p#loading {
   color: #ccc;
 }
 
-div.content { 
-  background-color: #f3f3f3;
-  margin: 1em 0;
-  padding: 0.5em 1.5em;
-  border-radius: 1em;
-  -moz-border-radius: 1em;
+.content { 
+  margin: 0;
+  padding: 0;
 }
 
-div.content .right {
-  width: 20em;
-  margin-left: 25em;
+.content .right, .content .left { 
+  width: 24em;
+  margin: 0;
+  padding: 0.7em 0.5em;
+  min-height: 14em;
 }
-div.content .left {
+.content .right {
+  margin-left: 26em;
+  background-color: #80e080;
+  border-top-right-radius: 2em;
+  border-bottom-left-radius: 2em;
+}
+.content .left {
   float: left;
-  width: 20em;
+  background-color: #8080e0;
+  border-top-left-radius: 2em;
+  border-bottom-right-radius: 2em;
 }
-div.content .foot {
+footer {
   clear: both;
 }
 .about {
@@ -86,14 +77,12 @@ div.content .foot {
 }
 
 h2 {
+  color: white;
   font-weight: bold;
   font-size: x-large;
   font-variant: small-caps;
-  color: #777;
-  text-shadow: #ccc 2px 1px 0;
   letter-spacing: 0.2em;
-  margin: 0;
-  padding: 0.1em 0;
+  text-align: center;
 }
 
 .note {
