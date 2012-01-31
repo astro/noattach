@@ -24,18 +24,21 @@ header {
 h1 {
   padding: 0;
   margin: 0 0.1em;
-  color: #80e080;
-  text-shadow: #20b020 2px 2px 0;
+  color: #40b040;
+  text-shadow: #006000 2px 2px 0;
   font-size: 600%;
   font-weight: black;
-  letter-spacing: -0.14em;
+  letter-spacing: -0.16em;
+  line-height: 0.9em;
 }
 h1 .dot { 
-  color: #8080e0;
+  color: #4040b0;
   text-shadow: #2020b0 2px 2px 0;
 }
 p.slogan {
-  color: #20b020;
+  color: #208020;
+  padding: 0;
+  margin: 0 auto;
 }
 
 p#loading {
@@ -46,25 +49,51 @@ p#loading {
 }
 
 .content { 
-  margin: 0;
+  margin: 1.5em 0;
   padding: 0;
 }
 
+.content .top {
+  margin: 0 auto 1em;
+  text-align: center;
+  width: 100%;
+  color: white;
+  background-color: #8080c0;
+  border-top-left-radius: 1em;
+  border-top-right-radius: 1em;
+  border-bottom-left-radius: 1em;
+  border-bottom-right-radius: 1em;
+}
+.content .top p {
+  line-height: 1.2em;
+  margin: 0 auto;
+  padding-bottom: 0.5em;
+}
+.content .top p:first-child {
+  padding-top: 0.5em;
+}
+.content .top .link a {
+  font-weight: bold;
+  text-decoration: underline;
+  color: white;
+  font-size: 110%;
+}
+
 .content .right, .content .left { 
-  width: 24em;
+  width: 23.5em;
   margin: 0;
   padding: 0.7em 0.5em;
   min-height: 14em;
 }
 .content .right {
-  margin-left: 26em;
-  background-color: #80e080;
+  margin-left: 25.5em;
+  background-color: #50b050;
   border-top-right-radius: 2em;
   border-bottom-left-radius: 2em;
 }
 .content .left {
   float: left;
-  background-color: #8080e0;
+  background-color: #5050b0;
   border-top-left-radius: 2em;
   border-bottom-right-radius: 2em;
 }
@@ -83,49 +112,51 @@ h2 {
   font-variant: small-caps;
   letter-spacing: 0.2em;
   text-align: center;
+  margin: 0;
 }
 
 .note {
-  color: #777;
+  color: #007;
   font-size: small;
 }
 
 .box {
   padding: 0.4em 0.4em 0.2em;
   margin: 0.5em 0;
-  background-color: white;
+  background-color: rgba(255,255,255,0.8);
   border-radius: 0.3em;
   -moz-border-radius: 0.3em;
+}
+.box .inner {
+  text-align: center;
 }
 .box p {
   padding: 0 0.1em;
   margin: 0;
+  line-height: 1.5em;
 }
 .box p .name {
   overflow: hidden;
   margin-right: 5em;
 }
 .box .control {
-  margin-top: -1em;
-  //margin-bottom: 0.2em;
+  margin-top: -1.6em;
   padding: 0;
   text-align: right;
 }
 .box .control .size {
   font-size: x-small;
-  color: #888;
+  color: #666;
   vertical-align: text-top;
 }
 .control a.remove {
   vertical-align: text-top;
   font-weight: bold;
-  color: #ccc;
-  opacity: 0.6;
+  color: #aaa;
   text-decoration: none;
-  content: url(/remove.png);
 }
 .control a.remove:hover {
-  opacity: 1;
+  color: #c33;
   text-decoration: none;
 }
 
@@ -171,13 +202,11 @@ ul#remote li .meta {
   font-family: monospace;
 }
 
-label[for='file']:before {
-  content: url(/add.png);
-}
 label[for='file'] {
-  color: #800;
+  color: #007000;
   font-weight: bold;
   font-size: small;
+  cursor: pointer;
 }
 input[type=file] {
   font-size: x-small;
@@ -185,4 +214,5 @@ input[type=file] {
   overflow: hidden;
   color: #aaa;
   margin: 0.1em 0.1em 0.5em;
+  cursor: pointer;
 }
