@@ -69,7 +69,7 @@ Room.prototype.onShare = function(socket, info) {
 	    len++;
 	} while(this.shares.hasOwnProperty(id));
 	info.id = id;
-	info.by = socket.handshake.address.address;
+	//info.by = socket.handshake.address.address;
 
 	// Add info
 	this.shares[id] = {
@@ -137,8 +137,7 @@ Room.prototype.requestTransfer = function(shareId, offset, by, cb) {
     share.socket.emit('transfer',
 		      { id: shareId,
 			token: token,
-			offset: offset,
-			by: by });
+			offset: offset });
 };
 
 /* later, instead of the socket.io connection, the ajax response is

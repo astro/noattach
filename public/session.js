@@ -340,8 +340,7 @@ function connect() {
     socket.on('transfer', function(req) {
 	if (req &&
 	    shares.hasOwnProperty(req.id) &&
-	    req.token &&
-	    req.by) {
+	    req.token) {
 
 	    // TODO: implement long path for error case
 	    shares[req.id].upload(req.token, req.offset, req.by);
