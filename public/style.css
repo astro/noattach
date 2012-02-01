@@ -121,9 +121,10 @@ h2 {
 }
 
 .box {
-  padding: 0.4em 0.4em 0.2em;
+  vertical-align: middle;
+  padding: 0.4em;
   margin: 0.5em 0;
-  background-color: rgba(255,255,255,0.8);
+  background-color: rgba(255,255,255,0.7);
   border-radius: 0.3em;
   -moz-border-radius: 0.3em;
 }
@@ -133,16 +134,17 @@ h2 {
 .box p {
   padding: 0 0.1em;
   margin: 0;
-  line-height: 1.5em;
+  line-height: 1.4em;
 }
 .box p .name {
   overflow: hidden;
   margin-right: 5em;
 }
 .box .control {
-  margin-top: -1.6em;
+  margin-top: -1.4em;
   padding: 0;
   text-align: right;
+  line-height: 1em;
 }
 .box .control .size {
   font-size: x-small;
@@ -164,6 +166,7 @@ h2 {
   content: url(/file.png);
   padding: 0 1px;
   margin: 0;
+  vertical-align: -2px;
 }
 .file {
   text-decoration: none;
@@ -181,7 +184,7 @@ a.file:hover {
 }
 
 ul#remote {
-  padding: 0;
+  padding: 0.2em 0.1em;
   margin: 0.2em 0;
   list-style-type: none;
 }

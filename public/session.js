@@ -210,7 +210,7 @@ UploadProgress.prototype.end = function() {
 };
 
 function RemoteShare(shareInfo) {
-    var li = $('<li class="box"><p><a class="file" href="#" type="application/octet-stream" target="_blank"></a></p> <p class="control"><span class="meta"><span class="size"></span></span></p></li>');
+    var li = $('<li><p><a class="file name" href="#" type="application/octet-stream" target="_blank"></a></p> <p class="control"><span class="meta"><span class="size"></span></span></p></li>');
     var a = li.find('a');
     a.text(shareInfo.name);
     a.attr('href', document.location.pathname + '/f' + shareInfo.id +
