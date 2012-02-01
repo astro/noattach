@@ -307,8 +307,11 @@ function connect() {
 
     socket.on('connect', function(){
 	send = socket.emit.bind(socket);
-	socket.emit('join', document.location.pathname);
+	var loc = document.location;
+	socket.emit('join', loc.pathname);
 	$('#loading').hide();
+	var roomlink = loc.protocol + "//" + loc.host + loc.pathname;
+	$('#roomlink').text(roomlink).attr({ href: roomlink });
 	$('#dashboard').show();
 
 	if (checkCompatibility() === false) {
