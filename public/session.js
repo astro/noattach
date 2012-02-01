@@ -303,7 +303,7 @@ function connect() {
 	return;
     connecting = true;
 
-    var socket = new io.connect("/noattach");
+    var socket = io.connect("/noattach");
 
     socket.on('connect', function(){
 	send = socket.emit.bind(socket);
