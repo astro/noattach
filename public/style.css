@@ -171,6 +171,7 @@ h2 {
 .file {
   text-decoration: none;
   color: #333;
+  padding-left: 0.4em;
 }
 a.file:hover {
   text-decoration: none;
