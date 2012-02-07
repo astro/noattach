@@ -141,7 +141,10 @@ function base64Decoder() {
 	buf += data;
 	_in += data.length;
 
-	if (flush) {
+	if (!buf) {
+	    /* Shortcut, avoids creating empty buffers */
+	    return new Buffer(0);
+	} else if (flush) {
 	    data = new Buffer(buf, 'base64');
 	    buf = '';
 	} else {
