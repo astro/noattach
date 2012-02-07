@@ -310,7 +310,9 @@ function connect() {
 	var loc = document.location;
 	socket.emit('join', loc.pathname);
 	$('#loading').hide();
-	var roomlink = loc.protocol + "//" + loc.host + loc.pathname;
+	var host = (loc.host === "noattach.no.de") ?
+	    "noatta.ch" : loc.host;
+	var roomlink = loc.protocol + "//" + host + loc.pathname;
 	$('#roomlink').text(roomlink).attr({ href: roomlink });
 	$('#dashboard').show();
 
