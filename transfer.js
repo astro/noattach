@@ -114,7 +114,7 @@ Transfer.prototype.acceptUpload = function(req, res) {
 	}
     });
 
-    res.writeHead(200, { });
+    res.writeHead(200, { 'Content-Type': "text/plain" });
 };
 
 Transfer.prototype.end = function() {
