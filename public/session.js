@@ -371,7 +371,7 @@ function connect() {
 }
 
 $(document).ready(function() {
-    $('#loading').text("Plumbing the pipe...");
+    $('#loading').html("<img src='/throbber.gif'>");
     $('#dashboard').hide();
     connect();
 

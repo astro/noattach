@@ -41,11 +41,12 @@ p.slogan {
   margin: 0 auto;
 }
 
-p#loading {
+#loading {
   font-size: large;
   width: 20em;
   margin: 1em auto;
   color: #ccc;
+  text-align: center;
 }
 
 .content { 
