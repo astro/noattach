@@ -20,7 +20,7 @@ function Share(file, shareInfo) {
     this.file = file;
     this.name = shareInfo.name;
 
-    var div = $('<div class="box share"><p><a class="name file" href="#" type="application/octet-stream"></a></p><p class="control"><span class="size"></span> <a href="#" class="remove" title="Remove">✖</a></p></div>');
+    var div = $('<li class="box share"><p><a class="name file" href="#" type="application/octet-stream"></a></p><p class="control"><span class="size"></span> <a href="#" class="remove" title="Remove">✖</a></p></li>');
     div.find('.name').text(shareInfo.name);
     div.find('.name').attr('href', document.location.pathname + '/f' + this.id +
 			           '/' + encodeURIComponent(shareInfo.name));

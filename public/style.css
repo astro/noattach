@@ -173,6 +173,7 @@ h2 {
   text-decoration: none;
   color: #333;
   padding-left: 0.4em;
+  text-overflow: ellipsis;
 }
 a.file:hover {
   text-decoration: none;
@@ -182,6 +183,7 @@ a.file:hover {
 
 .upload {
   margin: 0 auto;
+  padding: 0 1em;
 }
 progress {
   border-radius: 2.5px;
@@ -189,9 +191,12 @@ progress {
 }
 .progress { 
   display: inline-block;
+  padding-left: 2em;
+  font-size: small;
+  color: #666;
 }
 
-ul#remote {
+ul#shares, ul#remote {
   padding: 0.2em 0.1em;
   margin: 0.2em 0;
   list-style-type: none;
