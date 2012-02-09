@@ -180,10 +180,15 @@ a.file:hover {
   text-shadow: #333 0 0 0.5px;
 }
 
+.upload {
+  margin: 0 auto;
+}
 progress {
-  width: 90%;
   border-radius: 2.5px;
   border: 1px solid black;
+}
+.progress { 
+  display: inline-block;
 }
 
 ul#remote {

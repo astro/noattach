@@ -124,7 +124,7 @@ Share.prototype.uploadChunk = function(token, blob, blobOffset, up, cb) {
 };
 
 function UploadProgress(parent, offset, total, by) {
-    var div = $('<div class="upload"><progress value="0" max="100"><p class="progress"></p></progress></div>');
+    var div = $('<div class="upload"><progress value="0" max="100"></progress><p class="progress"></p></div>');
     this.div = div;
     parent.append(div);
 
