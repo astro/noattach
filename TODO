@@ -1,7 +1,4 @@
-onbeforeunload
-box-shadow
-
 upload ratio
+upload throughput
+display IPs again
 group downloads by IP
-chunky transfers
-range transfers
