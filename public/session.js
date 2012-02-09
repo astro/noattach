@@ -124,60 +124,28 @@ Share.prototype.uploadChunk = function(token, blob, blobOffset, up, cb) {
 };
 
 function UploadProgress(parent, offset, total, by) {
-    var p = $('<p class="upload"><canvas width="160" height="16"></canvas> <span class="by"></span></p>');
-    this.p = p;
-    parent.append(p);
+    var div = $('<div class="upload"><progress value="0" max="100"><p class="progress"></p></progress></div>');
+    this.div = div;
+    parent.append(div);
 
-    if (by)
-	p.find('.by').text(by);
-
-    this.chunkProgress = -1;
+    this.chunkProgress = 0;
+    this.chunkLength = 512 * 1024;
     this.offset = 0;
     this.total = total;
     this.draw();
 }
 
 UploadProgress.prototype.draw = function() {
-    if (!this.canvas)
-	this.canvas = this.p.find('canvas')[0];
-    var ctx = this.canvas.getContext('2d');
-    var w = this.canvas.width, h = this.canvas.height;
+    var progressEl = this.div.find('progress');
+    var value = 100 * (this.offset + (this.chunkProgress * this.chunkLength)) / this.total;
+    progressEl.prop('value', value);
 
-    ctx.clearRect(0, 0, w, h);
-
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
-    ctx.lineWidth = 1;
-    var line = function(x1, y1, x2, y2) {
-	ctx.moveTo(x1, y1);
-	ctx.lineTo(x2, y2);
-	ctx.stroke();
-    };
-
-    /*line(0, 1, 0, h - 2);  // left
-    line(1, 0, w - 2, 0);  // top
-    line(1, h - 1, w - 2, h - 1);  // bottom
-    line(w - 1, 1, w - 1, h - 2);  // right*/
-
-    var bar = function(x1, x2, alpha, style) {
-	ctx.globalAlpha = alpha;
-	ctx.fillStyle = style;
-	ctx.fillRect(Math.floor(x1 * (w - 2) + 1), 1,
-		     Math.floor((x2 - x1) * (w - 2)), h - 2);
-    };
-
-    // previous chunks
-    if (this.offset > 0)
-	bar(0, this.offset / this.total, 1.0, '#AA0000');
-    // current chunk shade
-    bar(this.offset / this.total, (this.offset + this.chunkLength) / this.total, 0.2, '#800000');
-    // current chunk progress
-    if (this.chunkProgress >= 0) {
-	bar(this.offset / this.total, (this.offset + (this.chunkProgress * this.chunkLength)) / this.total, 1.0, '#AA0000');
-    }
+    var progressLabel = this.div.find('.progress');
+    progressLabel.text(Math.ceil(value) + "%");
 };
 
 UploadProgress.prototype.chunkReading = function(offset, length) {
-    this.chunkProgress = -1;
+    this.chunkProgress = 0;
     this.offset = offset;
     this.chunkLength = length;
     this.draw();
@@ -202,9 +170,9 @@ UploadProgress.prototype.trackXHR = function(xhr, by) {
 };
 
 UploadProgress.prototype.end = function() {
-    var p = this.p;
-    p.fadeOut(1000, function() {
-	p.remove();
+    var div = this.div;
+    div.fadeOut(1000, function() {
+	div.remove();
     });
     this.draw();
 };

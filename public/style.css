@@ -177,12 +177,13 @@ h2 {
 a.file:hover {
   text-decoration: none;
   color: black;
-  text-shadow: white 1px 1px 0;
+  text-shadow: #333 0 0 0.5px;
 }
 
-.upload canvas { 
-  margin: 0.4em 0 0;
-  vertical-align: text-bottom;
+progress {
+  width: 90%;
+  border-radius: 2.5px;
+  border: 1px solid black;
 }
 
 ul#remote {
@@ -203,7 +204,6 @@ ul#remote li .meta {
   font-weight: bold;
 }
 .by {
-  text-shadow: white 0 1px 0;
   font-family: monospace;
 }
 
