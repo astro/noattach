@@ -105,6 +105,11 @@ footer {
   text-align: center;
   font-size: x-small;
 }
+#flattr {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
 
 h2 {
   color: white;
