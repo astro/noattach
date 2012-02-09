@@ -111,6 +111,22 @@ footer {
   right: 0;
 }
 
+#about { 
+  //width: 23.5em;
+  margin: 0;
+  padding: 0.7em 0.5em;
+  background-color: #50b050;
+  border-top-right-radius: 2em;
+  border-bottom-left-radius: 2em;
+}
+#about ol {
+  padding-left: 2em;
+}
+
+p img {
+  vertical-align: middle;
+}
+
 h2 {
   color: white;
   font-weight: bold;

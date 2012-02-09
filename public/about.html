@@ -7,69 +7,68 @@
     <link rel="shortcut icon" href="/favicon.png">
   </head>
   <body>
-    <div class="head">
-      <h1><span class="rouge">no</span>atta<span class="rouge">.</span>ch</h1>
-      <p class="slogan">Instant Personal File Sharing</p>
-    </div>
+    <header>
+      <h1>noatta<span class="dot">.</span>ch</h1>
+      <p class="slogan">Instant Temporary File Sharing</p>
+    </header>
 
-    <div id="dashboard" class="content">
+    <div id="about" class="content">
 
-      <p>
-      You can follow <a
-      href="http://twitter.com/astro1138">@astro1138</a> on
-      Twitter. E-mail detailed problem descriptions to <a href="mailto:astro@spaceboyz.net">astro@spaceboyz.net</a>.
+      <p class="box">
+	<a href="/">noatta.ch</a> is made by
+	<a href="http://spaceboyz.net/~astro/">Astro</a>.
+	The code is open source on Github: <a href="https://github.com/astro/noattach">github.com/astro/noattach</a>
       </p>
+
+      <h2>How does it work?</h2>
+      <ol class="box">
+	<li>You get a random link that you can share privately with
+	  your friends.</li>
+	<li>Browsing to that URL establishes a real-time connection.</li>
+	<li>You instantly see what others share.</li>
+	<li>When you add a new file, its file name and size will be
+	  broadcasted over the noatta.ch server to any other people
+	  visiting your URL.</li>
+	<li>Downloading is a simple HTTP request to the server.</li>
+	<li>The server will then individually tell the browser that
+	  shares the file to upload a chunk of it.</li>
+	<li>After passing it to the downloader, it will continuously
+	  ask the sharer to pass the next chunk until end of file.</li>
+      </ol>
       
       <h2>Why?</h2>
-      <p>
-      There are dropboxen and share hosters, but often, you'll want to
-      share files only once, temporarily, with a limited set of
-      recipients. That's what noatta.ch is made for: just point your
-      browser at <a href="http://noatta.ch/">http://noatta.ch/</a> and
-      pass the the new URL to the people you want to share with.
-      </p>
-
-      <h2>How?</h2>
-      <p>
-      The server side runs on Node.js, together with Connect as the
-      HTTP middleware. Communication is leveraged by Socket.io, but
-      uploads are fairly normal XMLHttpRequests (AJAX) using the
-      latest features (sendAsBinary &amp; upload events).
+      <p class="box">
+	There are dropboxen and share hosters, but often, you'll want to
+	share files only once, temporarily, with a limited set of
+	recipients. That's what <strong>noatta.ch</strong> is made for: just point your
+	browser at <a href="http://noatta.ch/">http://noatta.ch/</a> and
+	pass the new URL to the people you want to share with.
       </p>
 
       <h2>Browser support?</h2>
-      <p>
-      On-demand sharing requires the <a
-      href="http://caniuse.com/#feat=fileapi">File API</a>.
+      <p class="box">
+	On-demand sharing requires
+	the <a href="http://caniuse.com/#feat=fileapi">File API</a>.
       </p>
 
-      <h2>It crashed my browser!</h2>
-      <p>
-      If you're sharing big files with many people I recommend good
-      old BitTorrent.
+      <h2>Does it cost money?</h2>
+      <p class="box">
+	This site is running on a free Joyent
+	SmartMachine. <strong>.ch</strong> domains are quite
+	pricy. Support me for this project:
+	<a href="http://flattr.com/thing/69810/noatta-ch"><img src="/flattr-button-compact.png" alt="Flattr this!" title="Flattr this!" border="0" /></a>
       </p>
-
-      <h2>IP addresses?</h2>
-      <p>
-      Before any authority demands permanent logging of the metadata I
-      want to auto-expose evil people. You've got nothing to fear if
-      you're sharing temporarily with a limited set of recipients.
-      </p>
-
-      <h2>Why target="_blank"?</h2>
-      <p>
-      I saw it as the only reliable way to keep the page open when
-      clicking on downloads.
-      </p>
-      
-      <h2>¥€$!</h2>
-      <p>
-      Luckily I've got a coupon code for the brand new <a
-      href="http://joyent.com/">Joyent</a> Node.js hosting. Other than
-      that, .ch domains are quite pricy. Support me for this project:
-      <a href="http://flattr.com/thing/69810/noatta-ch"><img src="http://api.flattr.com/button/button-compact-static-100x17.png" alt="Flattr this" title="Flattr this" border="0" /></a>
-      </p>
-
     </div>
+
+    <footer>
+      <p class="about">
+	<a href="http://flattr.com/thing/69810/noatta-ch"
+	   id="flattr">
+	  <img src="/flattr-badge-large.png"
+	       alt="Flattr this!" title="Flattr this!" border="0">
+	</a>
+      </p>
+    </footer>
+      
   </body>
 </html>
