@@ -100,15 +100,11 @@ p.slogan {
 }
 footer {
   clear: both;
-}
-.about {
   text-align: center;
-  font-size: x-small;
 }
-#flattr {
-  position: absolute;
-  top: 0;
-  right: 0;
+.about, #flattr {
+  font-size: x-small;
+  margin: 0 auto;
 }
 
 #about { 
