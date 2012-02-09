@@ -160,8 +160,13 @@ var server = Connect.createServer(
 server.listen(parseInt(process.env.PORT, 10) || 8000);
 
 var socketServer = io.listen(server);
+socketServer.configure(function(){
+    socketServer.set('transports', ['htmlfile', 'xhr-polling', 'jsonp-polling']);
+    socketServer.set('close timeout', 15);
+    socketServer.set('heartbeat timeout', 5);
+    socketServer.set('heartbeat interval', 10);
+});
 socketServer.of('/noattach').on('connection', function(socket) {
-console.log({connection:socket})
     var room;
     // hook socket's message & disconnect
 
